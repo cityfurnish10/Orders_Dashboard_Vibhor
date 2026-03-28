@@ -74,9 +74,52 @@ body{font-family:'Montserrat',sans-serif;background:var(--cf-bg);color:var(--cf-
 .tn{color:var(--cf-purple);font-weight:700;}.tc{color:var(--cf-error);font-weight:700;}
 .tp{color:var(--cf-orange);font-weight:700;}.tnet{color:var(--cf-success);font-weight:800;}.tr{color:var(--cf-muted);}
 footer{text-align:center;padding:18px;font-size:11px;color:var(--cf-muted);font-family:'Poppins',sans-serif;}
+
+/* ── PASSWORD GATE ── */
+#gate{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;}
+#gate .card{background:#fff;border-radius:20px;padding:44px 40px 36px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.4);text-align:center;}
+#gate .glogo{font-family:'Poppins',sans-serif;font-size:26px;font-weight:900;color:#222;margin-bottom:4px;}
+#gate .glogo span{color:#6C5CE7;}
+#gate .gtag{font-size:12px;color:#888;font-family:'Poppins',sans-serif;margin-bottom:28px;}
+#gate .gttl{font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:#222;margin-bottom:6px;}
+#gate .gsub{font-size:12px;color:#888;font-family:'Montserrat',sans-serif;margin-bottom:24px;}
+#gate .ginput-wrap{position:relative;margin-bottom:14px;}
+#gate input[type=password]{width:100%;padding:13px 48px 13px 18px;border:2px solid #E4E4F0;border-radius:12px;font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;outline:none;transition:border .2s,box-shadow .2s;letter-spacing:3px;color:#222;}
+#gate input[type=password]:focus{border-color:#6C5CE7;box-shadow:0 0 0 4px rgba(108,92,231,0.12);}
+#gate input[type=password].shake{animation:shake .4s ease;}
+#gate .eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;user-select:none;color:#888;}
+#gate .gbtn{width:100%;padding:13px;background:#6C5CE7;color:#fff;border:none;border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:background .15s,transform .1s;letter-spacing:0.5px;margin-bottom:14px;}
+#gate .gbtn:hover{background:#4834C5;}
+#gate .gbtn:active{transform:scale(0.98);}
+#gate .gerr{font-size:12px;color:#DC3545;font-family:'Poppins',sans-serif;font-weight:700;min-height:18px;margin-bottom:2px;}
+#gate .gfooter{font-size:11px;color:rgba(255,255,255,0.4);font-family:'Poppins',sans-serif;margin-top:20px;text-align:center;}
+#gate.hidden{display:none;}
+#app{display:none;}
+#app.visible{display:block;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
 </style>
 </head>
 <body>
+
+<div id="gate" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);">
+  <div class="card">
+    <div style="font-size:44px;margin-bottom:12px;">🔒</div>
+    <div class="glogo">city<span>furnish</span></div>
+    <div class="gtag">commitment-free furniture rental</div>
+    <div class="gttl">Net Orders Dashboard</div>
+    <div class="gsub">Internal use only — enter your access password</div>
+    <div class="ginput-wrap">
+      <input type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')tryLogin()" autocomplete="current-password"/>
+      <span class="eye" id="eyeBtn" onclick="toggleEye()">👁️</span>
+    </div>
+    <div class="gerr" id="pwErr"></div>
+    <button class="gbtn" onclick="tryLogin()">Unlock Dashboard →</button>
+  </div>
+  <div class="gfooter">cityfurnish · Internal Analytics · Jan–Mar 2026</div>
+</div>
+<div id="app" style="display:none;">
+
 <div class="header">
   <div class="logo">city<span>furnish</span></div>
   <div class="hm"><strong>Net Orders Dashboard</strong>Jan 1 – Mar 26, 2026 &nbsp;·&nbsp; 85 Days</div>
@@ -421,7 +464,63 @@ function setGran(g,btn){
   drawTrend(AM,g);
 }
 
-window.addEventListener('DOMContentLoaded',()=>renderAll('all'));
+
+// ── PASSWORD GATE JS ──
+// Password: CF@2026 (SHA-256 hashed — raw password never stored)
+// To change password: open browser console, run:
+//   sha256('NewPassword').then(h => console.log(h))
+//   Then replace the HASH value below
+const HASH = '0e47e4ef6129559d8ad84bcd52c00999831dc9b3e61ec284e85dc95fe43bcfec';
+
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function tryLogin() {
+  const val = document.getElementById('pwInput').value;
+  if (!val) { showErr('Please enter a password'); return; }
+  const h = await sha256(val);
+  if (h === HASH) {
+    // Correct — hide gate, show app
+    const gate = document.getElementById('gate');
+    const app  = document.getElementById('app');
+    gate.style.display = 'none';
+    app.style.display  = 'block';
+    renderAll('all');
+  } else {
+    showErr('Incorrect password. Try again.');
+    const inp = document.getElementById('pwInput');
+    inp.classList.remove('shake');
+    void inp.offsetWidth;
+    inp.classList.add('shake');
+    inp.value = '';
+    inp.focus();
+    setTimeout(() => inp.classList.remove('shake'), 400);
+  }
+}
+
+function showErr(msg) {
+  document.getElementById('pwErr').textContent = msg;
+  setTimeout(() => document.getElementById('pwErr').textContent = '', 3000);
+}
+
+function toggleEye() {
+  const inp = document.getElementById('pwInput');
+  const eye = document.getElementById('eyeBtn');
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '🙈'; }
+  else { inp.type = 'password'; eye.textContent = '👁️'; }
+}
+
+// Always show gate on page load — no session caching
+window.addEventListener('DOMContentLoaded', () => {
+  // Ensure gate is visible, app is hidden on every page load
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('app').style.display  = 'none';
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+});
+
 </script>
+</div><!-- end #app -->
 </body>
 </html>
