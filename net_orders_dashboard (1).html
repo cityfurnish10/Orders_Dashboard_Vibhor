@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>cityfurnish — Net Orders Dashboard Jan–Mar 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<style>
+:root{--cf-purple:#6C5CE7;--cf-purple-dark:#4834C5;--cf-purple-wash:#F0EAFF;--cf-gold:#F5C518;--cf-gold-dark:#D4A80E;--cf-charcoal:#222222;--cf-bg:#F4F3FF;--cf-white:#FFFFFF;--cf-border:#E4E4F0;--cf-muted:#888888;--cf-success:#28A745;--cf-error:#DC3545;--cf-orange:#FF6B00;--cf-navy:#1B3C59;--cf-magenta:#D63384;--r:12px;--sh:0 2px 12px rgba(108,92,231,0.08);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',sans-serif;background:var(--cf-bg);color:var(--cf-charcoal);}
+.header{background:var(--cf-charcoal);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.logo{font-family:'Poppins',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;}.logo span{color:var(--cf-gold);}
+.hm{font-size:11px;color:rgba(255,255,255,0.5);font-family:'Poppins',sans-serif;text-align:right;}.hm strong{color:var(--cf-gold);font-size:12px;display:block;}
+
+/* SLICER */
+.slicer{background:#fff;border-bottom:2px solid var(--cf-border);padding:11px 28px;position:sticky;top:52px;z-index:150;display:flex;align-items:center;gap:18px;box-shadow:0 2px 8px rgba(108,92,231,0.05);}
+.slbl{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:var(--cf-muted);text-transform:uppercase;letter-spacing:1.2px;white-space:nowrap;}
+.sbtns{display:flex;border:1.5px solid var(--cf-border);border-radius:10px;overflow:hidden;}
+.sbtn{padding:7px 20px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;border:none;cursor:pointer;background:transparent;color:var(--cf-muted);transition:all .15s;}
+.sbtn:not(:last-child){border-right:1.5px solid var(--cf-border);}
+.sbtn.active{background:var(--cf-purple);color:#fff;}
+.sbtn:hover:not(.active){background:var(--cf-purple-wash);color:var(--cf-purple);}
+.speriod{margin-left:auto;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--cf-muted);}
+.speriod span{color:var(--cf-purple);font-weight:800;}
+
+.main{max-width:1400px;margin:0 auto;padding:22px 20px 48px;}
+.st{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:var(--cf-purple);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.st::after{content:'';flex:1;height:1px;background:var(--cf-border);}
+
+/* KPI */
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px;}
+.kpi{background:#fff;border-radius:var(--r);padding:18px 16px 14px;box-shadow:var(--sh);border:1px solid var(--cf-border);position:relative;overflow:hidden;transition:transform .2s;}
+.kpi:hover{transform:translateY(-2px);}
+.kpi .bar{position:absolute;top:0;left:0;right:0;height:4px;border-radius:12px 12px 0 0;}
+.kpi.new .bar{background:var(--cf-purple);}.kpi.can .bar{background:var(--cf-error);}
+.kpi.pick .bar{background:var(--cf-orange);}.kpi.net .bar{background:var(--cf-success);}
+.kl{font-size:10px;font-weight:700;color:var(--cf-muted);text-transform:uppercase;letter-spacing:1px;font-family:'Poppins',sans-serif;margin-bottom:5px;}
+.kv{font-family:'Poppins',sans-serif;font-size:32px;font-weight:800;line-height:1;}
+.kpi.new .kv{color:var(--cf-purple);}.kpi.can .kv{color:var(--cf-error);}
+.kpi.pick .kv{color:var(--cf-orange);}.kpi.net .kv{color:var(--cf-success);}
+.ks{font-size:11px;color:var(--cf-muted);margin-top:5px;}
+.km{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.km.up{background:#d4edda;color:#155724;}.km.dn{background:#f8d7da;color:#721c24;}.km.fl{background:#e2e3e5;color:#383d41;}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;margin-bottom:13px;}
+.g1{margin-bottom:13px;}
+.cc{background:#fff;border-radius:var(--r);border:1px solid var(--cf-border);box-shadow:var(--sh);padding:16px 16px 12px;}
+.cc h3{font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;margin-bottom:2px;}
+.cc .sub{font-size:11px;color:var(--cf-muted);margin-bottom:10px;}
+.cw{position:relative;}
+.rb{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+.tg{display:flex;border:1.5px solid var(--cf-border);border-radius:8px;overflow:hidden;}
+.tb{padding:5px 12px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;border:none;cursor:pointer;background:transparent;color:var(--cf-muted);transition:all .15s;}
+.tb.active{background:var(--cf-purple);color:#fff;}
+.tb:hover:not(.active){background:var(--cf-purple-wash);color:var(--cf-purple);}
+.leg{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
+.li{display:flex;align-items:center;gap:5px;font-size:10px;font-family:'Poppins',sans-serif;font-weight:700;}
+.ld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.pill{border-radius:20px;padding:4px 11px;font-size:10px;font-family:'Poppins',sans-serif;font-weight:700;}
+.pill.w{background:#FFF3CD;color:#856404;border:1px solid #ffeeba;}
+.pill.g{background:#d4edda;color:#155724;border:1px solid #c3e6cb;}
+.pill.b{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+.pill.n{background:var(--cf-purple-wash);color:var(--cf-purple-dark);border:1px solid var(--cf-border);}
+.mtbl{width:100%;border-collapse:collapse;font-size:12px;font-family:'Poppins',sans-serif;}
+.mtbl th{padding:8px 12px;background:var(--cf-purple);color:#fff;font-weight:700;font-size:11px;text-align:left;}
+.mtbl th:first-child{border-radius:8px 0 0 0;}.mtbl th:last-child{border-radius:0 8px 0 0;}
+.mtbl td{padding:8px 12px;border-bottom:1px solid var(--cf-border);font-weight:500;}
+.mtbl tr:hover td,.mtbl tr.hl td{background:var(--cf-purple-wash);}
+.tn{color:var(--cf-purple);font-weight:700;}.tc{color:var(--cf-error);font-weight:700;}
+.tp{color:var(--cf-orange);font-weight:700;}.tnet{color:var(--cf-success);font-weight:800;}.tr{color:var(--cf-muted);}
+footer{text-align:center;padding:18px;font-size:11px;color:var(--cf-muted);font-family:'Poppins',sans-serif;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">city<span>furnish</span></div>
+  <div class="hm"><strong>Net Orders Dashboard</strong>Jan 1 – Mar 26, 2026 &nbsp;·&nbsp; 85 Days</div>
+</div>
+
+<div class="slicer">
+  <div class="slbl">📅 Month Slicer</div>
+  <div class="sbtns">
+    <button class="sbtn active" onclick="setMonth('all',this)">All Months</button>
+    <button class="sbtn" onclick="setMonth('2026-01',this)">January 2026</button>
+    <button class="sbtn" onclick="setMonth('2026-02',this)">February 2026</button>
+    <button class="sbtn" onclick="setMonth('2026-03',this)">March 2026</button>
+  </div>
+  <div class="speriod">Showing: <span id="slicerLabel">All Months — Jan to Mar 2026</span></div>
+</div>
+
+<div class="main">
+  <div class="st">Overview</div>
+  <div class="kg">
+    <div class="kpi new"><div class="bar"></div><div class="kl">New Orders</div><div class="kv" id="kN">8,511</div><div class="ks" id="kNs">~100/day avg</div><div class="km fl" id="kNm">Jan–Mar 2026</div></div>
+    <div class="kpi can"><div class="bar"></div><div class="kl">Cancellations</div><div class="kv" id="kC">1,366</div><div class="ks" id="kCs">16.1% cancel rate</div><div class="km fl" id="kCm">Jan–Mar 2026</div></div>
+    <div class="kpi pick"><div class="bar"></div><div class="kl">Pickups</div><div class="kv" id="kP">4,704</div><div class="ks" id="kPs">55.3% of new orders</div><div class="km fl" id="kPm">Jan–Mar 2026</div></div>
+    <div class="kpi net"><div class="bar"></div><div class="kl">Net Orders</div><div class="kv" id="kNT">2,441</div><div class="ks">New − Cancels − Pickups</div><div class="km fl" id="kNTm">28.7% net rate</div></div>
+  </div>
+
+  <div class="pills" id="pills"></div>
+
+  <div class="st">Daily Trend</div>
+  <div class="cc g1">
+    <div class="rb">
+      <div><h3>New / Cancellations / Pickups / Net — Daily View</h3><div class="sub" id="trendSub">All 85 days</div></div>
+      <div class="tg">
+        <button class="tb active" onclick="setGran('daily',this)">Daily</button>
+        <button class="tb" onclick="setGran('weekly',this)">Weekly</button>
+        <button class="tb" onclick="setGran('monthly',this)">Monthly</button>
+      </div>
+    </div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#6C5CE7"></div>New Orders</div>
+      <div class="li"><div class="ld" style="background:#DC3545"></div>Cancellations</div>
+      <div class="li"><div class="ld" style="background:#FF6B00"></div>Pickups</div>
+      <div class="li"><div class="ld" style="background:#28A745"></div>Net Orders</div>
+    </div>
+    <div class="cw" style="height:290px;"><canvas id="trendChart"></canvas></div>
+  </div>
+
+  <div class="cc g1">
+    <h3 style="margin-bottom:11px;">Monthly Summary</h3>
+    <table class="mtbl">
+      <thead><tr><th>Month</th><th>New Orders</th><th>Cancellations</th><th>Pickups</th><th>Net Orders</th><th>Cancel Rate</th><th>Pickup Rate</th><th>Net Rate</th></tr></thead>
+      <tbody>
+        <tr id="r01"><td><strong>January 2026</strong></td><td class="tn">3,043</td><td class="tc">473</td><td class="tp">1,540</td><td class="tnet">1,030</td><td class="tr">15.5%</td><td class="tr">50.6%</td><td class="tr">33.9%</td></tr>
+        <tr id="r02"><td><strong>February 2026</strong></td><td class="tn">2,931</td><td class="tc">462</td><td class="tp">1,579</td><td class="tnet">890</td><td class="tr">15.8%</td><td class="tr">53.9%</td><td class="tr">30.4%</td></tr>
+        <tr id="r03"><td><strong>March 2026 (till 26th)</strong></td><td class="tn">2,537</td><td class="tc">431</td><td class="tp">1,585</td><td class="tnet">521</td><td class="tr">17.0%</td><td class="tr">62.5%</td><td class="tr">20.5%</td></tr>
+        <tr style="background:var(--cf-purple-wash);font-weight:800;"><td><strong>Total</strong></td><td class="tn">8,511</td><td class="tc">1,366</td><td class="tp">4,704</td><td class="tnet">2,441</td><td class="tr">16.1%</td><td class="tr">55.3%</td><td class="tr">28.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="st">City-Wise Analysis</div>
+  <div class="g2">
+    <div class="cc"><h3>Volume by City</h3><div class="sub">New · Cancellations · Pickups</div><div class="cw" style="height:260px;"><canvas id="cityVol"></canvas></div></div>
+    <div class="cc"><h3>Net Orders by City</h3><div class="sub">Net = New − Cancels − Pickups</div><div class="cw" style="height:260px;"><canvas id="cityNet"></canvas></div></div>
+  </div>
+  <div class="cc g1">
+    <h3>Cancellation Rate by City (%)</h3><div class="sub">🔴 &gt;20% critical &nbsp;🟠 16–20% watch &nbsp;🟢 &lt;16% healthy</div>
+    <div class="cw" style="height:180px;"><canvas id="canRate"></canvas></div>
+  </div>
+
+  <div class="st">Cancellations — Deep Dive</div>
+  <div class="g2">
+    <div class="cc"><h3>Cancellation Reasons</h3><div class="sub">Primary reason distribution</div><div class="cw" style="height:260px;"><canvas id="canReasons"></canvas></div></div>
+    <div class="cc"><h3>Cancellation Sub-Reasons</h3><div class="sub">Granular root causes — top 12</div><div class="cw" style="height:260px;"><canvas id="canSub"></canvas></div></div>
+  </div>
+
+  <div class="st">Pickups — Deep Dive</div>
+  <div class="g2">
+    <div class="cc"><h3>Pickup Reasons</h3><div class="sub">Why customers return products (top 10)</div><div class="cw" style="height:280px;"><canvas id="pickReasons"></canvas></div></div>
+    <div class="cc">
+      <h3>Pickup Type &amp; Segment</h3><div class="sub">Full/Partial/Defaulter and tenure timing</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;height:280px;">
+        <div class="cw"><canvas id="pickType"></canvas></div>
+        <div class="cw"><canvas id="pickSeg"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="st">New Orders — Attributes</div>
+  <div class="g3">
+    <div class="cc"><h3>Channel Mix</h3><div class="sub">Android / Web / iOS</div><div class="cw" style="height:200px;"><canvas id="channel"></canvas></div></div>
+    <div class="cc"><h3>Payment Mode</h3><div class="sub">Upfront vs Monthly</div><div class="cw" style="height:200px;"><canvas id="fmp"></canvas></div></div>
+    <div class="cc"><h3>CityShield Adoption</h3><div class="sub">Protection plan take-up</div><div class="cw" style="height:200px;"><canvas id="shield"></canvas></div></div>
+  </div>
+  <div class="cc g1" style="margin-bottom:24px;">
+    <h3>Tenure Distribution</h3><div class="sub">Months opted at order time</div>
+    <div class="cw" style="height:185px;"><canvas id="tenure"></canvas></div>
+  </div>
+</div>
+<footer>cityfurnish · Net Orders Dashboard · Jan–Mar 2026 · Internal Use Only</footer>
+
+<script>
+const MOM={"all":{"totals":{"new":8511,"can":1366,"pick":4704,"net":2441},"daily":[{"Date":"2026-01-01","new":121,"can":15.0,"pick":40,"net":66.0},{"Date":"2026-01-02","new":120,"can":9.0,"pick":44,"net":67.0},{"Date":"2026-01-03","new":129,"can":1.0,"pick":54,"net":74.0},{"Date":"2026-01-04","new":120,"can":13.0,"pick":45,"net":62.0},{"Date":"2026-01-05","new":120,"can":23.0,"pick":26,"net":71.0},{"Date":"2026-01-06","new":113,"can":0.0,"pick":57,"net":56.0},{"Date":"2026-01-07","new":110,"can":48.0,"pick":39,"net":23.0},{"Date":"2026-01-08","new":94,"can":17.0,"pick":48,"net":29.0},{"Date":"2026-01-09","new":105,"can":19.0,"pick":51,"net":35.0},{"Date":"2026-01-10","new":91,"can":19.0,"pick":48,"net":24.0},{"Date":"2026-01-11","new":112,"can":4.0,"pick":90,"net":18.0},{"Date":"2026-01-12","new":100,"can":23.0,"pick":35,"net":42.0},{"Date":"2026-01-13","new":70,"can":1.0,"pick":38,"net":31.0},{"Date":"2026-01-14","new":84,"can":34.0,"pick":52,"net":-2.0},{"Date":"2026-01-15","new":79,"can":23.0,"pick":62,"net":-6.0},{"Date":"2026-01-16","new":93,"can":30.0,"pick":54,"net":9.0},{"Date":"2026-01-17","new":102,"can":11.0,"pick":37,"net":54.0},{"Date":"2026-01-18","new":108,"can":0.0,"pick":31,"net":77.0},{"Date":"2026-01-19","new":93,"can":27.0,"pick":77,"net":-11.0},{"Date":"2026-01-20","new":67,"can":25.0,"pick":50,"net":-8.0},{"Date":"2026-01-21","new":72,"can":17.0,"pick":69,"net":-14.0},{"Date":"2026-01-22","new":69,"can":13.0,"pick":72,"net":-16.0},{"Date":"2026-01-23","new":74,"can":15.0,"pick":33,"net":26.0},{"Date":"2026-01-24","new":74,"can":13.0,"pick":50,"net":11.0},{"Date":"2026-01-25","new":96,"can":17.0,"pick":63,"net":16.0},{"Date":"2026-01-26","new":106,"can":5.0,"pick":22,"net":79.0},{"Date":"2026-01-27","new":90,"can":13.0,"pick":50,"net":27.0},{"Date":"2026-01-28","new":87,"can":10.0,"pick":51,"net":26.0},{"Date":"2026-01-29","new":107,"can":6.0,"pick":49,"net":52.0},{"Date":"2026-01-30","new":119,"can":12.0,"pick":34,"net":73.0},{"Date":"2026-01-31","new":118,"can":10.0,"pick":69,"net":39.0},{"Date":"2026-02-01","new":169,"can":2.0,"pick":53,"net":114.0},{"Date":"2026-02-02","new":133,"can":27.0,"pick":56,"net":50.0},{"Date":"2026-02-03","new":121,"can":21.0,"pick":44,"net":56.0},{"Date":"2026-02-04","new":135,"can":13.0,"pick":62,"net":60.0},{"Date":"2026-02-05","new":129,"can":14.0,"pick":62,"net":53.0},{"Date":"2026-02-06","new":122,"can":12.0,"pick":48,"net":62.0},{"Date":"2026-02-07","new":115,"can":34.0,"pick":44,"net":37.0},{"Date":"2026-02-08","new":138,"can":5.0,"pick":41,"net":92.0},{"Date":"2026-02-09","new":98,"can":30.0,"pick":64,"net":4.0},{"Date":"2026-02-10","new":94,"can":14.0,"pick":45,"net":35.0},{"Date":"2026-02-11","new":100,"can":13.0,"pick":62,"net":25.0},{"Date":"2026-02-12","new":95,"can":21.0,"pick":26,"net":48.0},{"Date":"2026-02-13","new":67,"can":29.0,"pick":49,"net":-11.0},{"Date":"2026-02-14","new":91,"can":20.0,"pick":105,"net":-34.0},{"Date":"2026-02-15","new":80,"can":11.0,"pick":80,"net":-11.0},{"Date":"2026-02-16","new":87,"can":23.0,"pick":52,"net":12.0},{"Date":"2026-02-17","new":83,"can":18.0,"pick":41,"net":24.0},{"Date":"2026-02-18","new":88,"can":11.0,"pick":39,"net":38.0},{"Date":"2026-02-19","new":105,"can":5.0,"pick":38,"net":62.0},{"Date":"2026-02-20","new":78,"can":3.0,"pick":44,"net":31.0},{"Date":"2026-02-21","new":97,"can":35.0,"pick":70,"net":-8.0},{"Date":"2026-02-22","new":109,"can":12.0,"pick":92,"net":5.0},{"Date":"2026-02-23","new":96,"can":20.0,"pick":53,"net":23.0},{"Date":"2026-02-24","new":112,"can":18.0,"pick":52,"net":42.0},{"Date":"2026-02-25","new":112,"can":8.0,"pick":85,"net":19.0},{"Date":"2026-02-26","new":117,"can":12.0,"pick":54,"net":51.0},{"Date":"2026-02-27","new":85,"can":14.0,"pick":67,"net":4.0},{"Date":"2026-02-28","new":75,"can":17.0,"pick":51,"net":7.0},{"Date":"2026-03-01","new":86,"can":35.0,"pick":59,"net":-8.0},{"Date":"2026-03-02","new":82,"can":31.0,"pick":62,"net":-11.0},{"Date":"2026-03-03","new":91,"can":19.0,"pick":61,"net":11.0},{"Date":"2026-03-04","new":102,"can":19.0,"pick":36,"net":47.0},{"Date":"2026-03-05","new":85,"can":15.0,"pick":72,"net":-2.0},{"Date":"2026-03-06","new":120,"can":22.0,"pick":48,"net":50.0},{"Date":"2026-03-07","new":118,"can":20.0,"pick":52,"net":46.0},{"Date":"2026-03-08","new":187,"can":13.0,"pick":53,"net":121.0},{"Date":"2026-03-09","new":104,"can":14.0,"pick":69,"net":21.0},{"Date":"2026-03-10","new":66,"can":18.0,"pick":58,"net":-10.0},{"Date":"2026-03-11","new":86,"can":11.0,"pick":61,"net":14.0},{"Date":"2026-03-12","new":110,"can":11.0,"pick":46,"net":53.0},{"Date":"2026-03-13","new":115,"can":9.0,"pick":52,"net":54.0},{"Date":"2026-03-14","new":127,"can":18.0,"pick":78,"net":31.0},{"Date":"2026-03-15","new":132,"can":21.0,"pick":77,"net":34.0},{"Date":"2026-03-16","new":96,"can":20.0,"pick":58,"net":18.0},{"Date":"2026-03-17","new":104,"can":18.0,"pick":47,"net":39.0},{"Date":"2026-03-18","new":64,"can":19.0,"pick":75,"net":-30.0},{"Date":"2026-03-19","new":83,"can":18.0,"pick":65,"net":0.0},{"Date":"2026-03-20","new":83,"can":3.0,"pick":51,"net":29.0},{"Date":"2026-03-21","new":90,"can":14.0,"pick":101,"net":-25.0},{"Date":"2026-03-22","new":79,"can":17.0,"pick":56,"net":6.0},{"Date":"2026-03-23","new":69,"can":11.0,"pick":60,"net":-2.0},{"Date":"2026-03-24","new":94,"can":12.0,"pick":43,"net":39.0},{"Date":"2026-03-25","new":74,"can":13.0,"pick":75,"net":-14.0},{"Date":"2026-03-26","new":90,"can":10.0,"pick":70,"net":10.0}],"city_data":{"Bangalore":{"new":2714,"can":400,"pick":1672,"net":642},"Mumbai":{"new":1432,"can":292,"pick":767,"net":373},"Hyderabad":{"new":1109,"can":150,"pick":499,"net":460},"Pune":{"new":1063,"can":180,"pick":517,"net":366},"Delhi":{"new":800,"can":133,"pick":431,"net":236},"Gurgaon":{"new":659,"can":76,"pick":447,"net":136},"Ghaziabad/Noida":{"new":446,"can":57,"pick":272,"net":117},"Chennai":{"new":174,"can":53,"pick":35,"net":86}},"can_rate":{"Bangalore":14.7,"Mumbai":20.4,"Hyderabad":13.5,"Pune":16.9,"Delhi":16.6,"Gurgaon":11.5,"Ghaziabad/Noida":12.8,"Chennai":30.5},"can_reasons":{"Customer No Longer Needs Item":342,"Product Out of Stock":232,"Customer Wants to Buy":223,"Late Delivery":161,"Document Not Available":129,"Product Returned at Delivery":92,"Non Serviceable Area":83,"Customer not willing to share KYC":72,"Other":19,"-":13},"can_sub_reasons":{"Local Vendor":199,"Appliances OOS":155,"Financial Document":103,"Found better/cheaper option":103,"Delay from GT":102,"Shifting Plan Cancelled":88,"Customer not willing to share KYC":72,"Furniture OOS":68,"Out of Service Area-Marketplace vendor":58,"Cx place 2 orders/Qty  by mistake":55,"Unexpected Demand-KYC Completed":50,"Size/space issue at customer place":46,"Moving to Home Town":41,"Customer Changed Mind":32,"Need specific brand/design":32},"pick_reasons":{"I no longer need the products":2103,"I am relocating to another place":676,"Requirement Fulfilled":470,"I am moving into a furnished house":282,"I am moving abroad":258,"I am not happy with the products":190,"I want to buy furniture and appliances":144,"Others - Please specify":140,"I find it too expensive":113,"Defaulter":95},"pick_type":{"Full":4078,"Partial":531,"Defaulter":94,"Early":1},"pick_segment":{"After Tenure Completion":2250,"Early":1699,"-":755},"channel_data":{"android":3508,"web":2604,"ios":2399},"shield_data":{"Yes":5272,"No":3239},"fmp_data":{"Upfront":5471,"Monthly":3040},"tenure_data":{"3":3530,"6":1796,"9":393,"12":2792}},"2026-01":{"totals":{"new":3043,"can":473,"pick":1540,"net":1030},"daily":[{"Date":"2026-01-01","new":121,"can":15.0,"pick":40,"net":66.0},{"Date":"2026-01-02","new":120,"can":9.0,"pick":44,"net":67.0},{"Date":"2026-01-03","new":129,"can":1.0,"pick":54,"net":74.0},{"Date":"2026-01-04","new":120,"can":13.0,"pick":45,"net":62.0},{"Date":"2026-01-05","new":120,"can":23.0,"pick":26,"net":71.0},{"Date":"2026-01-06","new":113,"can":0.0,"pick":57,"net":56.0},{"Date":"2026-01-07","new":110,"can":48.0,"pick":39,"net":23.0},{"Date":"2026-01-08","new":94,"can":17.0,"pick":48,"net":29.0},{"Date":"2026-01-09","new":105,"can":19.0,"pick":51,"net":35.0},{"Date":"2026-01-10","new":91,"can":19.0,"pick":48,"net":24.0},{"Date":"2026-01-11","new":112,"can":4.0,"pick":90,"net":18.0},{"Date":"2026-01-12","new":100,"can":23.0,"pick":35,"net":42.0},{"Date":"2026-01-13","new":70,"can":1.0,"pick":38,"net":31.0},{"Date":"2026-01-14","new":84,"can":34.0,"pick":52,"net":-2.0},{"Date":"2026-01-15","new":79,"can":23.0,"pick":62,"net":-6.0},{"Date":"2026-01-16","new":93,"can":30.0,"pick":54,"net":9.0},{"Date":"2026-01-17","new":102,"can":11.0,"pick":37,"net":54.0},{"Date":"2026-01-18","new":108,"can":0.0,"pick":31,"net":77.0},{"Date":"2026-01-19","new":93,"can":27.0,"pick":77,"net":-11.0},{"Date":"2026-01-20","new":67,"can":25.0,"pick":50,"net":-8.0},{"Date":"2026-01-21","new":72,"can":17.0,"pick":69,"net":-14.0},{"Date":"2026-01-22","new":69,"can":13.0,"pick":72,"net":-16.0},{"Date":"2026-01-23","new":74,"can":15.0,"pick":33,"net":26.0},{"Date":"2026-01-24","new":74,"can":13.0,"pick":50,"net":11.0},{"Date":"2026-01-25","new":96,"can":17.0,"pick":63,"net":16.0},{"Date":"2026-01-26","new":106,"can":5.0,"pick":22,"net":79.0},{"Date":"2026-01-27","new":90,"can":13.0,"pick":50,"net":27.0},{"Date":"2026-01-28","new":87,"can":10.0,"pick":51,"net":26.0},{"Date":"2026-01-29","new":107,"can":6.0,"pick":49,"net":52.0},{"Date":"2026-01-30","new":119,"can":12.0,"pick":34,"net":73.0},{"Date":"2026-01-31","new":118,"can":10.0,"pick":69,"net":39.0}],"city_data":{"Bangalore":{"new":966,"can":145,"pick":534,"net":287},"Mumbai":{"new":554,"can":95,"pick":264,"net":195},"Hyderabad":{"new":368,"can":40,"pick":164,"net":164},"Pune":{"new":387,"can":70,"pick":169,"net":148},"Delhi":{"new":280,"can":53,"pick":134,"net":93},"Gurgaon":{"new":232,"can":27,"pick":151,"net":54},"Ghaziabad/Noida":{"new":165,"can":18,"pick":86,"net":61},"Chennai":{"new":69,"can":18,"pick":12,"net":39}},"can_rate":{"Bangalore":15.0,"Mumbai":17.1,"Hyderabad":10.9,"Pune":18.1,"Delhi":18.9,"Gurgaon":11.6,"Ghaziabad/Noida":10.9,"Chennai":26.1},"can_reasons":{"Customer No Longer Needs Item":108,"Product Out of Stock":106,"Customer Wants to Buy":59,"Late Delivery":56,"Document Not Available":50,"Product Returned at Delivery":37,"Customer not willing to share KYC":24,"Non Serviceable Area":19,"Other":7,"-":7},"can_sub_reasons":{"Appliances OOS":65,"Local Vendor":51,"Financial Document":43,"Furniture OOS":40,"Found better/cheaper option":33,"Delay from GT":30,"Shifting Plan Cancelled":28,"Customer not willing to share KYC":24,"Unexpected Demand-KYC Completed":23,"Size/space issue at customer place":21,"Customer Changed Mind":14,"Cx place 2 orders/Qty  by mistake":14,"Moving to Home Town":13,"Out of Service Area-Marketplace vendor":13,"Small staircase/lift not available/Mathadi Issue":8},"pick_reasons":{"I no longer need the products":680,"I am relocating to another place":218,"Requirement Fulfilled":197,"I am moving into a furnished house":87,"I am moving abroad":78,"I am not happy with the products":62,"I want to buy furniture and appliances":47,"Defaulter":36,"I find it too expensive":28,"Others - Please specify":26},"pick_type":{"Full":1332,"Partial":171,"Defaulter":36,"Early":1},"pick_segment":{"After Tenure Completion":693,"Early":534,"-":313},"channel_data":{"android":1246,"web":903,"ios":894},"shield_data":{"Yes":1865,"No":1178},"fmp_data":{"Upfront":1934,"Monthly":1109},"tenure_data":{"3":1247,"6":660,"9":135,"12":1001}},"2026-02":{"totals":{"new":2931,"can":462,"pick":1579,"net":890},"daily":[{"Date":"2026-02-01","new":169,"can":2,"pick":53,"net":114},{"Date":"2026-02-02","new":133,"can":27,"pick":56,"net":50},{"Date":"2026-02-03","new":121,"can":21,"pick":44,"net":56},{"Date":"2026-02-04","new":135,"can":13,"pick":62,"net":60},{"Date":"2026-02-05","new":129,"can":14,"pick":62,"net":53},{"Date":"2026-02-06","new":122,"can":12,"pick":48,"net":62},{"Date":"2026-02-07","new":115,"can":34,"pick":44,"net":37},{"Date":"2026-02-08","new":138,"can":5,"pick":41,"net":92},{"Date":"2026-02-09","new":98,"can":30,"pick":64,"net":4},{"Date":"2026-02-10","new":94,"can":14,"pick":45,"net":35},{"Date":"2026-02-11","new":100,"can":13,"pick":62,"net":25},{"Date":"2026-02-12","new":95,"can":21,"pick":26,"net":48},{"Date":"2026-02-13","new":67,"can":29,"pick":49,"net":-11},{"Date":"2026-02-14","new":91,"can":20,"pick":105,"net":-34},{"Date":"2026-02-15","new":80,"can":11,"pick":80,"net":-11},{"Date":"2026-02-16","new":87,"can":23,"pick":52,"net":12},{"Date":"2026-02-17","new":83,"can":18,"pick":41,"net":24},{"Date":"2026-02-18","new":88,"can":11,"pick":39,"net":38},{"Date":"2026-02-19","new":105,"can":5,"pick":38,"net":62},{"Date":"2026-02-20","new":78,"can":3,"pick":44,"net":31},{"Date":"2026-02-21","new":97,"can":35,"pick":70,"net":-8},{"Date":"2026-02-22","new":109,"can":12,"pick":92,"net":5},{"Date":"2026-02-23","new":96,"can":20,"pick":53,"net":23},{"Date":"2026-02-24","new":112,"can":18,"pick":52,"net":42},{"Date":"2026-02-25","new":112,"can":8,"pick":85,"net":19},{"Date":"2026-02-26","new":117,"can":12,"pick":54,"net":51},{"Date":"2026-02-27","new":85,"can":14,"pick":67,"net":4},{"Date":"2026-02-28","new":75,"can":17,"pick":51,"net":7}],"city_data":{"Bangalore":{"new":926,"can":123,"pick":555,"net":248},"Mumbai":{"new":501,"can":109,"pick":287,"net":105},"Hyderabad":{"new":396,"can":62,"pick":155,"net":179},"Pune":{"new":373,"can":50,"pick":167,"net":156},"Delhi":{"new":258,"can":43,"pick":155,"net":60},"Gurgaon":{"new":210,"can":23,"pick":144,"net":43},"Ghaziabad/Noida":{"new":140,"can":19,"pick":85,"net":36},"Chennai":{"new":79,"can":26,"pick":11,"net":42}},"can_rate":{"Bangalore":13.3,"Mumbai":21.8,"Hyderabad":15.7,"Pune":13.4,"Delhi":16.7,"Gurgaon":11.0,"Ghaziabad/Noida":13.6,"Chennai":32.9},"can_reasons":{"Customer No Longer Needs Item":119,"Customer Wants to Buy":93,"Product Out of Stock":65,"Late Delivery":52,"Document Not Available":41,"Non Serviceable Area":31,"Product Returned at Delivery":30,"Customer not willing to share KYC":23,"-":5,"Other":3},"can_sub_reasons":{"Local Vendor":82,"Appliances OOS":44,"Shifting Plan Cancelled":35,"Found better/cheaper option":35,"Financial Document":35,"Delay from GT":33,"Customer not willing to share KYC":23,"Out of Service Area-Marketplace vendor":19,"Unexpected Demand-KYC Completed":16,"Moving to Home Town":16,"Furniture OOS":16,"Cx place 2 orders/Qty  by mistake":15,"Size/space issue at customer place":14,"Need specific brand/design":12,"Other Ecom":11},"pick_reasons":{"I no longer need the products":666,"I am relocating to another place":234,"Requirement Fulfilled":195,"I am moving into a furnished house":88,"I am moving abroad":82,"I am not happy with the products":71,"Others - Please specify":49,"I want to buy furniture and appliances":45,"I find it too expensive":42,"I am not satisfied with the service":42},"pick_type":{"Full":1374,"Partial":172,"Defaulter":33},"pick_segment":{"After Tenure Completion":722,"Early":561,"-":296},"channel_data":{"android":1189,"web":893,"ios":849},"shield_data":{"Yes":1828,"No":1103},"fmp_data":{"Upfront":1872,"Monthly":1059},"tenure_data":{"3":1179,"6":632,"9":135,"12":985}},"2026-03":{"totals":{"new":2537,"can":431,"pick":1585,"net":521},"daily":[{"Date":"2026-03-01","new":86,"can":35,"pick":59,"net":-8},{"Date":"2026-03-02","new":82,"can":31,"pick":62,"net":-11},{"Date":"2026-03-03","new":91,"can":19,"pick":61,"net":11},{"Date":"2026-03-04","new":102,"can":19,"pick":36,"net":47},{"Date":"2026-03-05","new":85,"can":15,"pick":72,"net":-2},{"Date":"2026-03-06","new":120,"can":22,"pick":48,"net":50},{"Date":"2026-03-07","new":118,"can":20,"pick":52,"net":46},{"Date":"2026-03-08","new":187,"can":13,"pick":53,"net":121},{"Date":"2026-03-09","new":104,"can":14,"pick":69,"net":21},{"Date":"2026-03-10","new":66,"can":18,"pick":58,"net":-10},{"Date":"2026-03-11","new":86,"can":11,"pick":61,"net":14},{"Date":"2026-03-12","new":110,"can":11,"pick":46,"net":53},{"Date":"2026-03-13","new":115,"can":9,"pick":52,"net":54},{"Date":"2026-03-14","new":127,"can":18,"pick":78,"net":31},{"Date":"2026-03-15","new":132,"can":21,"pick":77,"net":34},{"Date":"2026-03-16","new":96,"can":20,"pick":58,"net":18},{"Date":"2026-03-17","new":104,"can":18,"pick":47,"net":39},{"Date":"2026-03-18","new":64,"can":19,"pick":75,"net":-30},{"Date":"2026-03-19","new":83,"can":18,"pick":65,"net":0},{"Date":"2026-03-20","new":83,"can":3,"pick":51,"net":29},{"Date":"2026-03-21","new":90,"can":14,"pick":101,"net":-25},{"Date":"2026-03-22","new":79,"can":17,"pick":56,"net":6},{"Date":"2026-03-23","new":69,"can":11,"pick":60,"net":-2},{"Date":"2026-03-24","new":94,"can":12,"pick":43,"net":39},{"Date":"2026-03-25","new":74,"can":13,"pick":75,"net":-14},{"Date":"2026-03-26","new":90,"can":10,"pick":70,"net":10}],"city_data":{"Bangalore":{"new":822,"can":132,"pick":583,"net":107},"Mumbai":{"new":377,"can":88,"pick":216,"net":73},"Hyderabad":{"new":345,"can":48,"pick":180,"net":117},"Pune":{"new":303,"can":60,"pick":181,"net":62},"Delhi":{"new":262,"can":37,"pick":142,"net":83},"Gurgaon":{"new":217,"can":26,"pick":152,"net":39},"Ghaziabad/Noida":{"new":141,"can":20,"pick":101,"net":20},"Chennai":{"new":26,"can":9,"pick":12,"net":5}},"can_rate":{"Bangalore":16.1,"Mumbai":23.3,"Hyderabad":13.9,"Pune":19.8,"Delhi":14.1,"Gurgaon":12.0,"Ghaziabad/Noida":14.2,"Chennai":34.6},"can_reasons":{"Customer No Longer Needs Item":115,"Customer Wants to Buy":71,"Product Out of Stock":61,"Late Delivery":53,"Document Not Available":38,"Non Serviceable Area":33,"Customer not willing to share KYC":25,"Product Returned at Delivery":25,"Other":9,"-":1},"can_sub_reasons":{"Local Vendor":66,"Appliances OOS":46,"Delay from GT":39,"Found better/cheaper option":35,"Out of Service Area-Marketplace vendor":26,"Cx place 2 orders/Qty  by mistake":26,"Financial Document":25,"Customer not willing to share KYC":25,"Shifting Plan Cancelled":25,"Weak Profile":13,"Moving to Home Town":12,"Furniture OOS":12,"Need specific brand/design":12,"Unexpected Demand-KYC Completed":11,"Size/space issue at customer place":11},"pick_reasons":{"I no longer need the products":757,"I am relocating to another place":224,"I am moving into a furnished house":107,"I am moving abroad":98,"Requirement Fulfilled":78,"Others - Please specify":65,"I am not happy with the products":57,"I want to buy furniture and appliances":52,"I find it too expensive":43,"I am not satisfied with the service":29},"pick_type":{"Full":1372,"Partial":188,"Defaulter":25},"pick_segment":{"After Tenure Completion":835,"Early":604,"-":146},"channel_data":{"android":1073,"web":808,"ios":656},"shield_data":{"Yes":1579,"No":958},"fmp_data":{"Upfront":1665,"Monthly":872},"tenure_data":{"3":1104,"6":504,"9":123,"12":806}}};
+
+const CITIES=['Bangalore','Mumbai','Hyderabad','Pune','Delhi','Gurgaon','Ghaziabad/Noida','Chennai'];
+const PAL=['#6C5CE7','#FF6B00','#28A745','#F5C518','#DC3545','#D63384','#1B3C59','#4A90C4','#87CEEB','#888888','#00B894','#FD79A8','#FDCB6E','#6C757D','#20C997'];
+const CL={pu:'#6C5CE7',re:'#DC3545',or:'#FF6B00',gr:'#28A745',go:'#F5C518',na:'#1B3C59',ma:'#D63384'};
+const WKLY={"2025-12-29":{"new":490,"can":38,"pick":183,"net":269},"2026-01-05":{"new":745,"can":130,"pick":359,"net":256},"2026-01-12":{"new":636,"can":122,"pick":309,"net":205},"2026-01-19":{"new":545,"can":127,"pick":414,"net":4},"2026-01-26":{"new":796,"can":58,"pick":328,"net":410},"2026-02-02":{"new":893,"can":126,"pick":357,"net":410},"2026-02-09":{"new":625,"can":138,"pick":431,"net":56},"2026-02-16":{"new":647,"can":107,"pick":376,"net":164},"2026-02-23":{"new":683,"can":124,"pick":421,"net":138},"2026-03-02":{"new":785,"can":139,"pick":384,"net":262},"2026-03-09":{"new":740,"can":102,"pick":441,"net":197},"2026-03-16":{"new":599,"can":109,"pick":453,"net":37},"2026-03-23":{"new":327,"can":46,"pick":248,"net":33}};
+const MNLY={"2026-01":{"new":3043,"can":473,"pick":1540,"net":1030},"2026-02":{"new":2931,"can":462,"pick":1579,"net":890},"2026-03":{"new":2537,"can":431,"pick":1585,"net":521}};
+const PREV={'2026-02':'2026-01','2026-03':'2026-02'};
+const MLBL={'all':'All Months — Jan to Mar 2026','2026-01':'January 2026','2026-02':'February 2026','2026-03':'March 2026 (till 26th)'};
+
+Chart.register(ChartDataLabels);
+Chart.defaults.font={family:"'Poppins',sans-serif"};
+Chart.defaults.plugins.datalabels.display=false;
+
+let AM='all', AG='daily';
+const CH={};
+
+const fmt=n=>Math.round(n).toLocaleString();
+const pc=(a,b)=>b?(a/b*100).toFixed(1)+'%':'—';
+
+function mk(id,type,data,opts){
+  if(CH[id]){CH[id].destroy();}
+  CH[id]=new Chart(document.getElementById(id).getContext('2d'),{type,data,options:opts});
+}
+
+function dlBar(color){return{display:true,anchor:'end',align:'end',color,font:{size:9,weight:700},formatter:v=>v>0?fmt(v):''};}
+function dlDonut(totalFn){return{display:ctx=>ctx.dataset.data[ctx.dataIndex]>(totalFn()*0.035),color:'#fff',font:{size:10,weight:800},formatter:v=>`${fmt(v)}\n${Math.round(v/totalFn()*100)}%`,textAlign:'center'};}
+
+// KPIs
+function updateKPIs(m){
+  const d=MOM[m].totals, days=MOM[m].daily.length;
+  const prev=PREV[m]?MOM[PREV[m]].totals:null;
+  document.getElementById('kN').textContent=fmt(d.new);
+  document.getElementById('kC').textContent=fmt(d.can);
+  document.getElementById('kP').textContent=fmt(d.pick);
+  document.getElementById('kNT').textContent=fmt(d.net);
+  document.getElementById('kNs').textContent=`~${Math.round(d.new/days)}/day avg`;
+  document.getElementById('kCs').textContent=`${(d.can/d.new*100).toFixed(1)}% cancel rate`;
+  document.getElementById('kPs').textContent=`${(d.pick/d.new*100).toFixed(1)}% of new orders`;
+  document.getElementById('kNTm').textContent=`${(d.net/d.new*100).toFixed(1)}% net rate`;
+  document.getElementById('kNTm').className='km fl';
+  const badge=(elId,curr,p)=>{
+    const el=document.getElementById(elId);
+    if(!p){el.className='km fl';el.textContent=MLBL[m];return;}
+    const diff=curr-p, pct=(diff/p*100).toFixed(1);
+    const cls=diff>0?'up':'dn', arrow=diff>0?'▲':'▼', sign=diff>0?'+':'';
+    el.className=`km ${cls}`;el.textContent=`${arrow}${sign}${pct}% vs prev mo`;
+  };
+  badge('kNm',d.new,prev?.new);
+  badge('kCm',d.can,prev?.can);
+  badge('kPm',d.pick,prev?.pick);
+  ['r01','r02','r03'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hl');});
+  if(m==='2026-01')document.getElementById('r01')?.classList.add('hl');
+  if(m==='2026-02')document.getElementById('r02')?.classList.add('hl');
+  if(m==='2026-03')document.getElementById('r03')?.classList.add('hl');
+}
+
+// INSIGHTS
+function updateInsights(m){
+  const d=MOM[m], t=d.totals;
+  const cr=(t.can/t.new*100).toFixed(1), pr=(t.pick/t.new*100).toFixed(1), nr=(t.net/t.new*100).toFixed(1);
+  const topC=Object.entries(d.can_rate).sort((a,b)=>b[1]-a[1])[0];
+  const bestC=Object.entries(d.can_rate).sort((a,b)=>a[1]-b[1])[0];
+  const topR=Object.entries(d.can_reasons).filter(([k])=>k!=='-').sort((a,b)=>b[1]-a[1])[0];
+  const oos=d.can_reasons['Product Out of Stock']||0, oosPct=(oos/t.can*100).toFixed(0);
+  const shPct=((d.shield_data.Yes||0)/t.new*100).toFixed(0);
+  document.getElementById('pills').innerHTML=`
+    <div class="pill ${parseFloat(pr)>55?'b':'w'}">⚠ Pickups = ${pr}% of new orders</div>
+    <div class="pill b">🔴 ${topC[0]}: ${topC[1]}% cancel rate — highest risk</div>
+    <div class="pill g">✅ ${bestC[0]}: ${bestC[1]}% cancel rate — best city</div>
+    <div class="pill ${parseInt(oosPct)>10?'w':'g'}">📦 Product OOS = ${oosPct}% of cancels</div>
+    <div class="pill ${parseInt(shPct)>55?'g':'w'}">🛡️ ${shPct}% CityShield attachment</div>
+    <div class="pill ${parseFloat(nr)<25?'b':'g'}">📊 Net rate: ${nr}% (${fmt(t.net)} orders)</div>
+    <div class="pill n">🔝 Top cancel: ${topR[0].split(' ').slice(0,3).join(' ')}... (${topR[1]})</div>`;
+}
+
+// TREND
+function drawTrend(m,g){
+  let lbl,nw,ca,pk,nt;
+  if(g==='daily'){const r=MOM[m].daily;lbl=r.map(x=>x.Date.slice(5));nw=r.map(x=>x.new);ca=r.map(x=>x.can);pk=r.map(x=>x.pick);nt=r.map(x=>x.net);}
+  else if(g==='monthly'){const ks=m==='all'?Object.keys(MNLY):[m];const vs=ks.map(k=>MNLY[k]);lbl=ks;nw=vs.map(v=>v.new);ca=vs.map(v=>v.can);pk=vs.map(v=>v.pick);nt=vs.map(v=>v.net);}
+  else{let ent=Object.entries(WKLY);if(m!=='all')ent=ent.filter(([k])=>k.slice(0,7)===m.slice(0,7));lbl=ent.map(([k])=>'W'+k.slice(5));nw=ent.map(([,v])=>v.new);ca=ent.map(([,v])=>v.can);pk=ent.map(([,v])=>v.pick);nt=ent.map(([,v])=>v.net);}
+  const showDL=g!=='daily', pr=g==='daily'?2:5;
+  document.getElementById('trendSub').textContent=`${MLBL[m]} · ${lbl.length} ${g==='daily'?'days':g==='weekly'?'weeks':'months'}`;
+  mk('trendChart','line',{
+    labels:lbl,
+    datasets:[
+      {label:'New Orders',data:nw,borderColor:CL.pu,backgroundColor:'rgba(108,92,231,0.1)',fill:false,tension:0.3,pointRadius:pr,borderWidth:2.5,datalabels:{display:showDL,align:'top',anchor:'end',color:CL.pu,font:{size:10,weight:700},formatter:v=>fmt(v)}},
+      {label:'Cancellations',data:ca,borderColor:CL.re,backgroundColor:'rgba(220,53,69,0.1)',fill:false,tension:0.3,pointRadius:pr,borderWidth:2,borderDash:[5,3],datalabels:{display:showDL,align:'top',anchor:'end',color:CL.re,font:{size:10,weight:700},formatter:v=>fmt(v)}},
+      {label:'Pickups',data:pk,borderColor:CL.or,backgroundColor:'rgba(255,107,0,0.1)',fill:false,tension:0.3,pointRadius:pr,borderWidth:2,borderDash:[3,3],datalabels:{display:showDL,align:'bottom',anchor:'end',color:CL.or,font:{size:10,weight:700},formatter:v=>fmt(v)}},
+      {label:'Net Orders',data:nt,borderColor:CL.gr,backgroundColor:'rgba(40,167,69,0.12)',fill:true,tension:0.3,pointRadius:pr,borderWidth:3,datalabels:{display:showDL,align:'bottom',anchor:'start',color:CL.gr,font:{size:11,weight:800},formatter:v=>fmt(v),backgroundColor:'rgba(255,255,255,0.85)',borderRadius:3,padding:2}},
+    ]
+  },{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>i[0].label}}},
+    scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},maxRotation:45}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10}},title:{display:true,text:'Orders',font:{size:10},color:'#888'}}}});
+}
+
+// CITY VOLUME
+function drawCityVol(m){
+  const cd=MOM[m].city_data;
+  mk('cityVol','bar',{
+    labels:CITIES,
+    datasets:[
+      {label:'New',data:CITIES.map(c=>cd[c]?.new||0),backgroundColor:CL.pu,borderRadius:3,datalabels:dlBar(CL.pu)},
+      {label:'Cancellations',data:CITIES.map(c=>cd[c]?.can||0),backgroundColor:CL.re,borderRadius:3,datalabels:dlBar(CL.re)},
+      {label:'Pickups',data:CITIES.map(c=>cd[c]?.pick||0),backgroundColor:CL.or,borderRadius:3,datalabels:dlBar(CL.or)},
+    ]
+  },{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11}}}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:10}}}}});
+}
+
+// CITY NET
+function drawCityNet(m){
+  const cd=MOM[m].city_data, nets=CITIES.map(c=>cd[c]?.net||0);
+  mk('cityNet','bar',{
+    labels:CITIES,
+    datasets:[{label:'Net Orders',data:nets,backgroundColor:nets.map(n=>n>=0?CL.gr:CL.re),borderRadius:6,
+      datalabels:{display:true,anchor:'end',align:'end',color:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?CL.gr:CL.re,font:{size:10,weight:800},formatter:v=>fmt(v)}}]
+  },{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:10}}}}});
+}
+
+// CAN RATE
+function drawCanRate(m){
+  const rates=CITIES.map(c=>MOM[m].can_rate[c]||0);
+  mk('canRate','bar',{
+    labels:CITIES,
+    datasets:[{label:'Cancel Rate %',data:rates,backgroundColor:rates.map(r=>r>20?CL.re:r>16?CL.or:CL.gr),borderRadius:6,
+      datalabels:{display:true,anchor:'end',align:'end',font:{size:11,weight:800},color:ctx=>{const r=ctx.dataset.data[ctx.dataIndex];return r>20?CL.re:r>16?CL.or:CL.gr;},formatter:v=>v+'%'}}]
+  },{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:i=>` ${i.raw}%`}}},
+    scales:{x:{ticks:{font:{size:10}}},y:{ticks:{callback:v=>v+'%',font:{size:10}},suggestedMax:42}}});
+}
+
+// CAN REASONS
+function drawCanReasons(m){
+  const raw=MOM[m].can_reasons, labels=Object.keys(raw).filter(k=>k!=='-'), vals=labels.map(k=>raw[k]);
+  const total=vals.reduce((a,b)=>a+b,0);
+  mk('canReasons','doughnut',{
+    labels,datasets:[{data:vals,backgroundColor:PAL.slice(0,labels.length),borderWidth:2,borderColor:'#fff',
+      datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>total*0.04,color:'#fff',font:{size:9,weight:700},formatter:v=>`${v}\n${Math.round(v/total*100)}%`,textAlign:'center'}}]
+  },{responsive:true,maintainAspectRatio:false,cutout:'58%',
+    plugins:{legend:{position:'right',labels:{font:{size:9},padding:6,boxWidth:9}},tooltip:{callbacks:{label:i=>` ${i.label}: ${i.raw} (${Math.round(i.raw/total*100)}%)`}}}});
+}
+
+// CAN SUB
+function drawCanSub(m){
+  const raw=MOM[m].can_sub_reasons, labels=Object.keys(raw).slice(0,12), vals=labels.map(k=>raw[k]);
+  mk('canSub','bar',{
+    labels,datasets:[{label:'Count',data:vals,backgroundColor:PAL.slice(0,12).map(c=>c+'CC'),borderRadius:3,
+      datalabels:{display:true,anchor:'end',align:'end',color:'#333',font:{size:9,weight:700},formatter:v=>v}}]
+  },{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:9}}}}});
+}
+
+// PICKUP REASONS
+function drawPickReasons(m){
+  const raw=MOM[m].pick_reasons, labels=Object.keys(raw).slice(0,10), vals=labels.map(k=>raw[k]);
+  mk('pickReasons','bar',{
+    labels,datasets:[{label:'Pickups',data:vals,backgroundColor:PAL.map(c=>c+'BB'),borderRadius:3,
+      datalabels:{display:true,anchor:'end',align:'end',color:'#333',font:{size:9,weight:700},formatter:v=>fmt(v)}}]
+  },{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:9}}}}});
+}
+
+// PICKUP TYPE
+function drawPickType(m){
+  const raw=MOM[m].pick_type, labels=Object.keys(raw), vals=Object.values(raw), total=vals.reduce((a,b)=>a+b,0);
+  mk('pickType','doughnut',{
+    labels,datasets:[{data:vals,backgroundColor:[CL.pu,CL.or,CL.re,CL.go],borderWidth:2,borderColor:'#fff',
+      datalabels:{display:true,color:'#fff',font:{size:10,weight:800},formatter:v=>`${fmt(v)}\n${Math.round(v/total*100)}%`,textAlign:'center'}}]
+  },{responsive:true,maintainAspectRatio:false,cutout:'50%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:9},padding:5,boxWidth:8}},title:{display:true,text:'By Type',font:{size:11,weight:700},color:'#222',padding:{bottom:5}}}});
+}
+
+// PICKUP SEGMENT
+function drawPickSeg(m){
+  const raw=MOM[m].pick_segment, labels=Object.keys(raw).filter(k=>k!=='-'), vals=labels.map(k=>raw[k]), total=vals.reduce((a,b)=>a+b,0);
+  mk('pickSeg','doughnut',{
+    labels,datasets:[{data:vals,backgroundColor:[CL.gr,CL.ma,CL.go],borderWidth:2,borderColor:'#fff',
+      datalabels:{display:true,color:'#fff',font:{size:10,weight:800},formatter:v=>`${fmt(v)}\n${Math.round(v/total*100)}%`,textAlign:'center'}}]
+  },{responsive:true,maintainAspectRatio:false,cutout:'50%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:9},padding:5,boxWidth:8}},title:{display:true,text:'By Segment',font:{size:11,weight:700},color:'#222',padding:{bottom:5}}}});
+}
+
+// CHANNEL
+function drawChannel(m){
+  const cd=MOM[m].channel_data, vals=[cd.android||0,cd.web||0,cd.ios||0], total=vals.reduce((a,b)=>a+b,0);
+  mk('channel','doughnut',{
+    labels:['Android','Web','iOS'],datasets:[{data:vals,backgroundColor:['#3DDC84','#4A90C4','#A2AAAD'],borderWidth:2,borderColor:'#fff',
+      datalabels:{display:true,color:'#fff',font:{size:11,weight:800},formatter:v=>`${fmt(v)}\n${Math.round(v/total*100)}%`,textAlign:'center'}}]
+  },{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:7,boxWidth:10}}}});
+}
+
+// FMP
+function drawFmp(m){
+  const fd=MOM[m].fmp_data, vals=[fd.Upfront||0,fd.Monthly||0], total=vals.reduce((a,b)=>a+b,0);
+  mk('fmp','doughnut',{
+    labels:['Upfront','Monthly'],datasets:[{data:vals,backgroundColor:[CL.pu,CL.go],borderWidth:2,borderColor:'#fff',
+      datalabels:{display:true,color:ctx=>ctx.dataIndex===1?'#333':'#fff',font:{size:11,weight:800},formatter:v=>`${fmt(v)}\n${Math.round(v/total*100)}%`,textAlign:'center'}}]
+  },{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:7,boxWidth:10}}}});
+}
+
+// SHIELD
+function drawShield(m){
+  const sd=MOM[m].shield_data, vals=[sd.Yes||0,sd.No||0], total=vals.reduce((a,b)=>a+b,0);
+  mk('shield','doughnut',{
+    labels:['With CityShield','Without'],datasets:[{data:vals,backgroundColor:[CL.na,'#E4E4F0'],borderWidth:2,borderColor:'#fff',
+      datalabels:{display:true,color:ctx=>ctx.dataIndex===1?'#555':'#fff',font:{size:11,weight:800},formatter:v=>`${fmt(v)}\n${Math.round(v/total*100)}%`,textAlign:'center'}}]
+  },{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:7,boxWidth:10}}}});
+}
+
+// TENURE
+function drawTenure(m){
+  const td=MOM[m].tenure_data, vals=[td['3']||0,td['6']||0,td['9']||0,td['12']||0], total=vals.reduce((a,b)=>a+b,0);
+  mk('tenure','bar',{
+    labels:['3 Months','6 Months','9 Months','12 Months'],
+    datasets:[{label:'Orders',data:vals,backgroundColor:[CL.pu,CL.or,CL.go,CL.gr],borderRadius:8,
+      datalabels:{display:true,anchor:'end',align:'end',color:'#333',font:{size:12,weight:800},formatter:v=>`${fmt(v)}\n(${Math.round(v/total*100)}%)`,textAlign:'center'}}]
+  },{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{font:{size:11}}},y:{ticks:{font:{size:10}},suggestedMax:Math.max(...vals)*1.22}}});
+}
+
+// MASTER RENDER
+function renderAll(m){
+  updateKPIs(m); updateInsights(m);
+  drawTrend(m,AG); drawCityVol(m); drawCityNet(m); drawCanRate(m);
+  drawCanReasons(m); drawCanSub(m); drawPickReasons(m); drawPickType(m); drawPickSeg(m);
+  drawChannel(m); drawFmp(m); drawShield(m); drawTenure(m);
+}
+
+// SLICER
+function setMonth(m,btn){
+  AM=m;
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('slicerLabel').textContent=MLBL[m];
+  renderAll(m);
+}
+
+// GRANULARITY
+function setGran(g,btn){
+  AG=g;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  drawTrend(AM,g);
+}
+
+window.addEventListener('DOMContentLoaded',()=>renderAll('all'));
+</script>
+</body>
+</html>
