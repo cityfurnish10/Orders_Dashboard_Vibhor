@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Cityfurnish · Coupon Analytics Jan–Mar 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--p:#6C5CE7;--pd:#4834C5;--pw:#F0EAFF;--pm:#AFA9EC;--g:#F5C518;--gd:#D4A80E;--gw:#FFF8DC;--ch:#222;--ch2:#333;--ch3:#555;--bg:#F4F3FF;--wh:#fff;--bd:#E4E4F0;--ok:#28A745;--er:#DC3545;--or:#FF6B00;--nv:#1B3C59;--mu:#888;--sh:0 2px 12px rgba(108,92,231,.08)}
@@ -19,8 +20,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--ch);mi
 .llbl{font-size:11px;color:var(--mu);text-align:left;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
 .linp{width:100%;padding:12px 16px;border:1.5px solid var(--bd);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:15px;outline:none;transition:border .2s;letter-spacing:.12em}
 .linp:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
-.lbtn{width:100%;margin-top:16px;padding:13px;background:var(--g);border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s,transform .1s}
-.lbtn:hover{background:var(--gd)}.lbtn:active{transform:scale(.98)}
+.lbtn{width:100%;margin-top:16px;padding:13px;background:var(--g);border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s}
+.lbtn:hover{background:var(--gd)}
 .lerr{color:var(--er);font-size:12px;margin-top:10px;min-height:18px;font-weight:600}
 .lhint{font-size:11px;color:#bbb;margin-top:16px}
 #dash{display:none}
@@ -29,86 +30,110 @@ header{background:var(--ch);padding:0 32px;height:60px;display:flex;align-items:
 .hlogo em{color:var(--g);font-style:normal}
 .hright{display:flex;align-items:center;gap:14px}
 #hbadge{background:rgba(108,92,231,.35);color:var(--pm);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;font-family:'Poppins',sans-serif}
-.hlbtn{background:none;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:'Montserrat',sans-serif}
+.hlbtn{background:none;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer}
 .hlbtn:hover{background:rgba(255,255,255,.1)}
-main{max-width:1240px;margin:0 auto;padding:20px 24px 60px}
-.slicer{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 20px;margin-bottom:18px;box-shadow:var(--sh);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.sg{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+main{max-width:1240px;margin:0 auto;padding:18px 24px 60px}
+/* SLICER */
+.slicer{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px 18px;margin-bottom:16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:10px}
+.slicer-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.sg{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .slbl{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
-.sdiv{width:1px;height:26px;background:var(--bd)}
-.pill{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;padding:5px 13px;border-radius:20px;border:1.5px solid var(--bd);background:#fff;color:var(--ch3);cursor:pointer;transition:all .18s;white-space:nowrap}
+.sdiv{width:1px;height:24px;background:var(--bd)}
+.pill{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;border:1.5px solid var(--bd);background:#fff;color:var(--ch3);cursor:pointer;transition:all .15s;white-space:nowrap}
 .pill:hover{border-color:var(--p);color:var(--p)}
 .pill.on{background:var(--p);border-color:var(--p);color:#fff}
 .cBAN.on{background:#6C5CE7;border-color:#6C5CE7}.cMUM.on{background:#FF6B00;border-color:#FF6B00}
 .cGUR.on{background:#28A745;border-color:#28A745}.cHYD.on{background:#1B3C59;border-color:#1B3C59}
 .cPUN.on{background:#D4A80E;border-color:#D4A80E}.cDEL.on{background:#DC3545;border-color:#DC3545}
-.cCHN.on{background:#0984E3;border-color:#0984E3}
-.sreset{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:var(--er);cursor:pointer;padding:5px 10px;border-radius:6px;border:1px solid rgba(220,53,69,.3);background:rgba(220,53,69,.06);margin-left:auto;white-space:nowrap;display:none}
-.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-.kcard{background:#fff;border-radius:12px;padding:18px 18px 14px;box-shadow:var(--sh);border:1px solid var(--bd);position:relative;overflow:hidden}
+.cCHN.on{background:#0984E3;border-color:#0984E3}.cNC.on{background:#555;border-color:#555}
+.tlbl{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.tl-nc{background:#f0f0f0;color:#555}.tl-mo{background:#e8f5e9;color:#1b5e20}.tl-up{background:var(--pw);color:var(--pd)}.tl-hi{background:#fff3e0;color:#bf360c}
+.sreset{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:var(--er);cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid rgba(220,53,69,.3);background:rgba(220,53,69,.06);margin-left:auto;white-space:nowrap;display:none}
+/* KPIs */
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kcard{background:#fff;border-radius:12px;padding:16px 16px 13px;box-shadow:var(--sh);border:1px solid var(--bd);position:relative;overflow:hidden}
 .kcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--p)}
 .kcard.gd::before{background:var(--g)}.kcard.gr::before{background:var(--ok)}.kcard.or::before{background:var(--or)}
-.klbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);font-weight:600;margin-bottom:7px}
-.kval{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:var(--ch);line-height:1}
+.klbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);font-weight:600;margin-bottom:6px}
+.kval{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;color:var(--ch);line-height:1}
 .ksub{font-size:11px;color:var(--mu);margin-top:5px}
-.tabs{display:flex;gap:0;margin-bottom:16px;background:#fff;border-radius:10px;padding:4px;box-shadow:var(--sh);border:1px solid var(--bd);width:fit-content}
-.tab{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;padding:7px 18px;border-radius:7px;border:none;background:none;cursor:pointer;color:var(--mu);transition:all .2s}
+/* TABS */
+.tabs{display:flex;background:#fff;border-radius:10px;padding:4px;box-shadow:var(--sh);border:1px solid var(--bd);width:fit-content;margin-bottom:14px}
+.tab{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;padding:6px 16px;border-radius:7px;border:none;background:none;cursor:pointer;color:var(--mu);transition:all .2s}
 .tab.on{background:var(--p);color:#fff}
 .tc{display:none}.tc.on{display:block}
-.sh{display:flex;align-items:center;gap:10px;margin:20px 0 13px}
-.stit{font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--ch)}
+/* SECTION */
+.sh{display:flex;align-items:center;gap:10px;margin:18px 0 12px}
+.stit{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;color:var(--ch)}
 .spill{font-size:10px;font-weight:700;background:var(--pw);color:var(--p);padding:3px 10px;border-radius:20px;font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.08em}
-.citygrid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:16px}
-.citycard{background:#fff;border-radius:10px;padding:12px 10px;box-shadow:var(--sh);border:1px solid var(--bd);text-align:center;cursor:pointer;transition:all .2s}
+/* CITY SNAP */
+.citygrid{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-bottom:14px}
+.citycard{background:#fff;border-radius:10px;padding:11px 8px;box-shadow:var(--sh);border:1px solid var(--bd);text-align:center;cursor:pointer;transition:all .2s}
 .citycard:hover{border-color:var(--p);transform:translateY(-1px)}
 .citycard.sel{border-color:var(--p);background:var(--pw)}
-.ccname{font-family:'Poppins',sans-serif;font-size:13px;font-weight:800;margin-bottom:3px}
-.ccord{font-size:11px;color:var(--mu);margin-bottom:2px}
+.ccname{font-family:'Poppins',sans-serif;font-size:12px;font-weight:800;margin-bottom:2px}
+.ccord{font-size:10px;color:var(--mu);margin-bottom:2px}
 .ccpct{font-family:'Poppins',sans-serif;font-size:11px;font-weight:700}
-.igrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
-.ins{background:#fff;border-radius:12px;padding:18px;box-shadow:var(--sh);border:1px solid var(--bd)}
-.inh{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.inico{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+/* INSIGHTS */
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
+.ins{background:#fff;border-radius:11px;padding:16px;box-shadow:var(--sh);border:1px solid var(--bd)}
+.inh{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.inico{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
 .ip{background:var(--pw)}.ig{background:var(--gw)}.ir{background:#FFF0F0}.is{background:#F0FFF4}.io{background:#FFF3E0}
 .intit{font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:var(--ch)}
-.instat{font-family:'Poppins',sans-serif;font-size:20px;font-weight:800;color:var(--p);margin:6px 0 4px}
+.instat{font-family:'Poppins',sans-serif;font-size:18px;font-weight:800;color:var(--p);margin:5px 0 3px}
 .instat.dn{color:var(--er)}.instat.up{color:var(--ok)}.instat.gd{color:var(--gd)}
-.inbody{font-size:12px;color:var(--ch3);line-height:1.7}
+.inbody{font-size:12px;color:var(--ch3);line-height:1.65}
 .inbody strong{color:var(--ch);font-weight:600}
-.cg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.cg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-.cc{background:#fff;border-radius:12px;padding:18px;box-shadow:var(--sh);border:1px solid var(--bd)}
+/* CHARTS */
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.cg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:11px}
+.cc{background:#fff;border-radius:11px;padding:16px;box-shadow:var(--sh);border:1px solid var(--bd)}
 .cc.full{grid-column:1/-1}
-.ctit{font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;color:var(--ch2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
-.csub{font-size:11px;color:var(--mu);margin-bottom:10px}
-.legrow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
-.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu)}
-.lsq{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-.twrap{overflow-x:auto;border-radius:12px;box-shadow:var(--sh)}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--bd);font-size:12px}
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.ctit{font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;color:var(--ch2);text-transform:uppercase;letter-spacing:.05em}
+.csub{font-size:10px;color:var(--mu);margin-top:2px}
+.cbadge{font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;color:var(--p);background:var(--pw);padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-left:8px;margin-top:1px}
+.legrow{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:8px}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--mu)}
+.lsq{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+/* TABLE */
+.twrap{overflow-x:auto;border-radius:11px;box-shadow:var(--sh)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:11px;overflow:hidden;border:1px solid var(--bd);font-size:12px}
 thead tr{background:var(--ch)}
-th{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.07em;padding:11px 12px;text-align:left;white-space:nowrap}
+th{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.07em;padding:10px 12px;text-align:left;white-space:nowrap}
 th.r,td.r{text-align:right}
 td{padding:9px 12px;color:var(--ch);border-bottom:1px solid var(--bd);white-space:nowrap}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:#FAFAFA}
 .grand td{background:var(--pw)!important;font-family:'Poppins',sans-serif;font-weight:800;color:var(--p)!important;border-top:2px solid var(--p)}
-.badge{display:inline-block;font-size:10px;font-weight:700;font-family:'Poppins',sans-serif;padding:2px 8px;border-radius:20px}
+.badge{display:inline-block;font-size:10px;font-weight:700;font-family:'Poppins',sans-serif;padding:2px 7px;border-radius:20px}
 .b25{background:#e8f5e9;color:#1b5e20}.b30{background:#fff3e0;color:#bf360c}.b20{background:var(--pw);color:var(--pd)}.bno{background:#f5f5f5;color:#555}
-.bbar{display:inline-block;background:var(--bd);border-radius:2px;height:4px;width:60px;vertical-align:middle;margin-left:6px;position:relative}
+.bbar{display:inline-block;background:var(--bd);border-radius:2px;height:4px;width:55px;vertical-align:middle;margin-left:5px;position:relative}
 .bfill{position:absolute;left:0;top:0;height:4px;border-radius:2px;background:var(--p)}
-.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px}
-.rc{background:#fff;border-radius:12px;padding:18px;box-shadow:var(--sh);border:1px solid var(--bd);border-left:4px solid var(--p)}
+/* RECO */
+.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:20px}
+.rc{background:#fff;border-radius:11px;padding:16px;box-shadow:var(--sh);border:1px solid var(--bd);border-left:4px solid var(--p)}
 .rc.urg{border-left-color:var(--er)}.rc.opp{border-left-color:var(--ok)}
-.rnum{font-size:11px;font-weight:800;font-family:'Poppins',sans-serif;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
-.rtit{font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:var(--ch);margin-bottom:7px}
-.rbod{font-size:12px;color:var(--ch3);line-height:1.65}
-footer{text-align:center;padding:18px;font-size:11px;color:#bbb;border-top:1px solid var(--bd);background:#fff;margin-top:40px}
+.rnum{font-size:10px;font-weight:800;font-family:'Poppins',sans-serif;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.rtit{font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:var(--ch);margin-bottom:6px}
+.rbod{font-size:11px;color:var(--ch3);line-height:1.6}
+/* NO-COUPON */
+.trend-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;margin-bottom:6px;min-height:20px}
+.nc-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.nc-card{background:var(--pw);border-radius:10px;padding:14px;border:1px solid var(--bd)}
+.nc-card.up{background:#fff3e0;border-color:#ffe0b2}
+.nc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);margin-bottom:5px;font-family:'Poppins',sans-serif}
+.nc-val{font-family:'Poppins',sans-serif;font-size:20px;font-weight:800;color:var(--p)}
+.nc-card.up .nc-val{color:var(--or)}
+.nc-sub{font-size:11px;color:var(--ch3);margin-top:3px}
+footer{text-align:center;padding:16px;font-size:11px;color:#bbb;border-top:1px solid var(--bd);background:#fff;margin-top:36px}
 footer span{color:var(--p);font-weight:600}
 </style>
 </head>
 <body>
 
+<!-- LOCK -->
 <div id="lock">
   <div class="lcard">
     <div class="lic">🔐</div>
@@ -122,134 +147,181 @@ footer span{color:var(--p);font-weight:600}
   </div>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dash">
 <header>
   <div class="hlogo">city<em>furnish</em></div>
   <div class="hright">
-    <span id="hbadge">All Cities · All Months</span>
+    <span id="hbadge">All Cities · All Months · All Codes</span>
     <button class="hlbtn" onclick="logout()">🔒 Lock</button>
   </div>
 </header>
 <main>
 
+<!-- SLICERS -->
 <div class="slicer">
-  <div class="sg">
-    <span class="slbl">Month</span>
-    <button class="pill on" data-grp="month" data-v="All" onclick="pick(this)">All</button>
-    <button class="pill" data-grp="month" data-v="Jan" onclick="pick(this)">Jan 2026</button>
-    <button class="pill" data-grp="month" data-v="Feb" onclick="pick(this)">Feb 2026</button>
-    <button class="pill" data-grp="month" data-v="Mar" onclick="pick(this)">Mar 2026</button>
+  <div class="slicer-row">
+    <div class="sg">
+      <span class="slbl">Month</span>
+      <button class="pill on" data-grp="month" data-v="All" onclick="pick(this)">All</button>
+      <button class="pill" data-grp="month" data-v="Jan" onclick="pick(this)">Jan 2026</button>
+      <button class="pill" data-grp="month" data-v="Feb" onclick="pick(this)">Feb 2026</button>
+      <button class="pill" data-grp="month" data-v="Mar" onclick="pick(this)">Mar 2026</button>
+    </div>
+    <div class="sdiv"></div>
+    <div class="sg">
+      <span class="slbl">City</span>
+      <button class="pill on" data-grp="city" data-v="All" onclick="pick(this)">All Cities</button>
+      <button class="pill cBAN" data-grp="city" data-v="BAN" onclick="pick(this)">BAN</button>
+      <button class="pill cMUM" data-grp="city" data-v="MUM" onclick="pick(this)">MUM</button>
+      <button class="pill cGUR" data-grp="city" data-v="GUR" onclick="pick(this)">GUR</button>
+      <button class="pill cHYD" data-grp="city" data-v="HYD" onclick="pick(this)">HYD</button>
+      <button class="pill cPUN" data-grp="city" data-v="PUN" onclick="pick(this)">PUN</button>
+      <button class="pill cDEL" data-grp="city" data-v="DEL" onclick="pick(this)">DEL</button>
+      <button class="pill cCHN" data-grp="city" data-v="CHN" onclick="pick(this)">CHN</button>
+    </div>
+    <button class="sreset" id="sreset" onclick="resetF()">✕ Reset</button>
   </div>
-  <div class="sdiv"></div>
-  <div class="sg">
-    <span class="slbl">City</span>
-    <button class="pill on" data-grp="city" data-v="All" onclick="pick(this)">All Cities</button>
-    <button class="pill cBAN" data-grp="city" data-v="BAN" onclick="pick(this)">🟣 BAN</button>
-    <button class="pill cMUM" data-grp="city" data-v="MUM" onclick="pick(this)">🟠 MUM</button>
-    <button class="pill cGUR" data-grp="city" data-v="GUR" onclick="pick(this)">🟢 GUR</button>
-    <button class="pill cHYD" data-grp="city" data-v="HYD" onclick="pick(this)">🔵 HYD</button>
-    <button class="pill cPUN" data-grp="city" data-v="PUN" onclick="pick(this)">🟡 PUN</button>
-    <button class="pill cDEL" data-grp="city" data-v="DEL" onclick="pick(this)">🔴 DEL</button>
-    <button class="pill cCHN" data-grp="city" data-v="CHN" onclick="pick(this)">🔵 CHN</button>
+  <div class="slicer-row">
+    <div class="sg" style="flex-wrap:wrap;gap:6px">
+      <span class="slbl">Coupon</span>
+      <button class="pill on" data-grp="coupon" data-v="All" onclick="pick(this)">All Codes</button>
+      <span class="tlbl tl-nc">No Code</span>
+      <button class="pill cNC" data-grp="coupon" data-v="-" onclick="pick(this)">No Coupon</button>
+      <span class="tlbl tl-mo">Monthly ≤20%</span>
+      <button class="pill" data-grp="coupon" data-v="RENT10" onclick="pick(this)">RENT10</button>
+      <button class="pill" data-grp="coupon" data-v="RENT15" onclick="pick(this)">RENT15</button>
+      <span class="tlbl tl-up">Upfront ~25%</span>
+      <button class="pill" data-grp="coupon" data-v="RENT20" onclick="pick(this)">RENT20</button>
+      <button class="pill" data-grp="coupon" data-v="RENT25" onclick="pick(this)">RENT25</button>
+      <span class="tlbl tl-hi">Upfront ~30%</span>
+      <button class="pill" data-grp="coupon" data-v="RENT30" onclick="pick(this)">RENT30</button>
+      <button class="pill" data-grp="coupon" data-v="PAYDAY" onclick="pick(this)">PAYDAY</button>
+      <button class="pill" data-grp="coupon" data-v="JAIHIND" onclick="pick(this)">JAIHIND</button>
+      <button class="pill" data-grp="coupon" data-v="LUV30" onclick="pick(this)">LUV30</button>
+      <button class="pill" data-grp="coupon" data-v="SPLASH" onclick="pick(this)">SPLASH</button>
+      <button class="pill" data-grp="coupon" data-v="DEAL30" onclick="pick(this)">DEAL30</button>
+    </div>
   </div>
-  <button class="sreset" id="sreset" onclick="resetF()">✕ Reset</button>
 </div>
 
+<!-- KPIs -->
 <div class="krow">
   <div class="kcard"><div class="klbl">Total Orders</div><div class="kval" id="k-ord">8,812</div><div class="ksub" id="k-ord-s">All cities · Jan–Mar 2026</div></div>
   <div class="kcard gd"><div class="klbl">Coupon Penetration</div><div class="kval" id="k-pen">76.9%</div><div class="ksub" id="k-pen-s">6,777 of 8,812 used a coupon</div></div>
   <div class="kcard gr"><div class="klbl">Total Revenue</div><div class="kval" id="k-rev">₹4.56Cr</div><div class="ksub" id="k-rev-s">Gross across selected period</div></div>
-  <div class="kcard or"><div class="klbl">Discount Given</div><div class="kval" id="k-disc">₹68.95L</div><div class="ksub" id="k-disc-s">15.1% of gross revenue</div></div>
+  <div class="kcard or"><div class="klbl">Total Discount Given</div><div class="kval" id="k-disc">₹68.95L</div><div class="ksub" id="k-disc-s">15.1% of gross revenue</div></div>
 </div>
 
+<!-- TABS -->
 <div class="tabs">
-  <button class="tab on" onclick="stab('analysis',this)">Acquisition Analysis</button>
+  <button class="tab on" onclick="stab('analysis',this)">Coupon Analysis</button>
   <button class="tab" onclick="stab('charts',this)">Charts</button>
   <button class="tab" onclick="stab('table',this)">Data Table</button>
-  <button class="tab" onclick="stab('reco',this)">Recommendations</button>
+  <button class="tab" onclick="stab('reco',this)">Observations</button>
 </div>
 
 <!-- ANALYSIS TAB -->
 <div id="tab-analysis" class="tc on">
   <div class="sh"><div class="stit">City Snapshot</div><div class="spill" id="snap-lbl">All Months</div></div>
   <div class="citygrid" id="city-snap"></div>
-  <div class="sh"><div class="stit">Acquisition Coupon Analysis</div><div class="spill" id="analysis-lbl">All Cities · All Months</div></div>
+  <div class="sh"><div class="stit">Coupon Trend Analysis</div><div class="spill" id="analysis-lbl">All Cities · All Months</div></div>
   <div class="igrid">
-    <div class="ins"><div class="inh"><div class="inico ip">📦</div><div class="intit">RENT25 — Upfront Plan, Largest Code by Volume</div></div><div class="instat" id="ins-r25">3,410 orders · 38.7%</div><div class="inbody">Upfront plan only. Declining gently: 1,192 → 1,111 → 1,107 (Jan→Mar). Total upfront orders are holding (1,934 → 1,872 → 1,851) so RENT25 is maintaining share. BAN (1,007) and GUR (625) lead.</div></div>
-    <div class="ins"><div class="inh"><div class="inico io">📉</div><div class="intit">RENT20 — The Primary Monthly Acquisition Code</div></div><div class="instat dn">679 → 646 → 432 new monthly customers</div><div class="inbody">RENT20 drives <strong>monthly plan orders</strong> (1,757 of 2,077 uses). Stable at 679 → 646 Jan–Feb, then dropped to 432 in March when RENT10 was substituted. Total monthly orders fell 1,059 → 987. RENT20 has been restored. Top cities: BAN (614), MUM (318), PUN (296).</div></div>
-    <div class="ins"><div class="inh"><div class="inico ir">🧪</div><div class="intit">The RENT10 Experiment — What the Acquisition Data Shows</div></div><div class="instat dn">Net monthly loss: −72 orders in March</div><div class="inbody">RENT20 was replaced by RENT10 in March. RENT10 captured 109 monthly orders but total monthly orders fell by 72 (1,059 → 987) — the drop wasn't covered. This indicates <strong>20% is closer to the threshold</strong> needed to convert monthly plan orders at current volume. RENT20 was subsequently restored.</div></div>
-    <div class="ins"><div class="inh"><div class="inico is">🔍</div><div class="intit">RENT10 — 109 New Customers Converted at Just 10% Discount</div></div><div class="instat up">₹144 avg disc · 5.1% disc rate</div><div class="inbody">109 orders did come through at RENT10 — at just ₹144 avg discount vs ₹287 for RENT20. BAN (39), MUM (31), PUN (14). A smaller but real segment exists that converts at 10%. Whether it can grow without cannibalising RENT20 volume is the open question.</div></div>
-    <div class="ins"><div class="inh"><div class="inico ir">📊</div><div class="intit">30% Upfront Codes — Highest Acquisition Cost, Volatile Volume</div></div><div class="instat">1,156 upfront orders · ₹2,950 avg disc</div><div class="inbody">Apply to <strong>upfront plan orders</strong> only. RENT30 shows volatile trend: 279 → 156 → 216. PAYDAY's Feb spike (66 → 214 → 104) inversely mirrors RENT30 — these two trade volume when campaigns switch. Total 30%-code upfront orders are roughly flat across the quarter.</div></div>
-    <div class="ins"><div class="inh"><div class="inico ip">🏙️</div><div class="intit">City Acquisition Mix — Where Each Plan Type Wins</div></div><div class="instat">BAN: 2,811 orders · 31.9%</div><div class="inbody">BAN (2,811), MUM (1,526), GUR (1,207) are the top three markets. GUR has the highest RENT25 density — 625 of 1,207 orders. CHN is small but uses RENT30 disproportionately for its size. No city drives significant monthly orders without a coupon.</div></div>
-    <div class="ins"><div class="inh"><div class="inico ig">💡</div><div class="intit">No-Coupon Acquisitions — High-Intent Customers, Higher AoV</div></div><div class="instat gd">2,035 orders · ₹4,812 avg AoV</div><div class="inbody">2,035 orders with no coupon — 1,285 monthly / 750 upfront. Highest avg order value at ₹4,812 vs ₹3,010 for RENT20. Trend flat: 430 → 411 → 444. Zero discount cost, higher spend — their source channel is worth tracking.</div></div>
-    <div class="ins"><div class="inh"><div class="inico io">📊</div><div class="intit">Acquisition Cost Baseline — 15% of Revenue Spent on Discounts</div></div><div class="instat">Jan 15.4% · Feb 15.0% · Mar 15.0%</div><div class="inbody">15% of gross revenue goes to discounts — consistent across all 3 months. Monthly codes ~9.5%/order, upfront codes ~19–25%. Stable baseline for benchmarking future experiments.</div></div>
+    <div class="ins"><div class="inh"><div class="inico ip">📦</div><div class="intit">RENT25 — Upfront Plan, Largest Code by Volume</div></div><div class="instat" id="ins-r25">3,410 orders · 38.7%</div><div class="inbody">Upfront plan only. Declining gently: 1,192 → 1,111 → 1,107 (Jan→Mar). Total upfront orders holding (1,934 → 1,872 → 1,851) so RENT25 maintains share. BAN (1,007) and GUR (625) lead.</div></div>
+    <div class="ins"><div class="inh"><div class="inico io">📉</div><div class="intit">RENT20 — Primary Monthly Acquisition Code</div></div><div class="instat dn">Monthly: 679 → 646 → 432</div><div class="inbody">RENT20 drives monthly plan orders (1,757 of 2,077 uses). Stable Jan–Feb, dropped to 432 in March when RENT10 was tested. Total monthly orders fell 1,059 → 987. Restored since. BAN (614), MUM (318), PUN (296).</div></div>
+    <div class="ins"><div class="inh"><div class="inico ir">🧪</div><div class="intit">The RENT10 Experiment — What the Data Shows</div></div><div class="instat dn">−72 net monthly orders in March</div><div class="inbody">RENT20 replaced by RENT10 in March. RENT10 captured 109 monthly orders but total monthly fell by 72 (1,059 → 987). The drop wasn't covered — 20% appears to be the current acquisition floor for monthly plans. RENT20 was restored.</div></div>
+    <div class="ins"><div class="inh"><div class="inico is">🔍</div><div class="intit">RENT10 — 109 Monthly Orders Did Convert at 10%</div></div><div class="instat up">₹144 avg disc · 5.1% disc rate</div><div class="inbody">109 monthly orders converted at RENT10 — lowest cost in the dataset at ₹144/order vs ₹287 for RENT20. BAN (39), MUM (31), PUN (14). A real but smaller segment exists that converts at 10%.</div></div>
+    <div class="ins"><div class="inh"><div class="inico ir">📊</div><div class="intit">30% Codes — Upfront Only, Volatile Volume</div></div><div class="instat">1,156 upfront orders · ₹2,950 avg disc</div><div class="inbody">Apply to upfront plan orders only. RENT30 volatile: 279 → 156 → 216. PAYDAY's Feb spike (66 → 214 → 104) inversely mirrors RENT30 — these two trade volume when campaigns switch.</div></div>
+    <div class="ins"><div class="inh"><div class="inico ip">🏙️</div><div class="intit">City Acquisition Mix</div></div><div class="instat">BAN: 2,811 orders · 31.9%</div><div class="inbody">BAN (2,811), MUM (1,526), GUR (1,207) top three. GUR has highest RENT25 density — 625 of 1,207 orders. CHN uses RENT30 disproportionately for its size. No city drives significant monthly orders without a coupon.</div></div>
+    <div class="ins"><div class="inh"><div class="inico ig">💡</div><div class="intit">No-Coupon Orders — Highest AoV, Zero Disc Cost</div></div><div class="instat gd">2,035 orders · ₹4,812 avg AoV</div><div class="inbody">2,035 orders with no coupon — 1,285 monthly / 750 upfront. Highest avg order value at ₹4,812 vs ₹3,010 for RENT20. Trend flat: 430 → 411 → 444. Zero discount cost, higher spend.</div></div>
+    <div class="ins"><div class="inh"><div class="inico io">📊</div><div class="intit">Blended Discount Rate — Stable at 15%</div></div><div class="instat">Jan 15.4% · Feb 15.0% · Mar 15.0%</div><div class="inbody">15% of gross revenue goes to discounts — consistent all 3 months. Monthly codes ~9.5%/order, upfront codes ~19–25%. Stable baseline for benchmarking future experiments.</div></div>
   </div>
-  <div class="sh"><div class="stit">Coupon Efficiency Matrix</div><div class="spill">Acquisition Cost Per New Customer by Code</div></div>
-  <div class="twrap"><table><thead><tr><th>Code</th><th>Group</th><th class="r">Orders</th><th class="r">Discount Given</th><th class="r">Disc / Order</th><th class="r">Revenue</th><th class="r">Rev / Order</th><th class="r">Grade</th></tr></thead><tbody id="eff-body"></tbody></table></div>
+  <div class="sh"><div class="stit">Coupon Efficiency Matrix</div><div class="spill">Disc Cost Per Order · Filtered View</div></div>
+  <div class="twrap"><table><thead><tr><th>Code</th><th>Plan Type</th><th class="r">Orders</th><th class="r">Discount Given</th><th class="r">Disc / Order</th><th class="r">Revenue</th><th class="r">Rev / Order</th><th class="r">Grade</th></tr></thead><tbody id="eff-body"></tbody></table></div>
 </div>
 
 <!-- CHARTS TAB -->
 <div id="tab-charts" class="tc">
   <div class="cg2">
-    <div class="cc"><div class="ctit">Monthly Orders — Coupon vs No Coupon</div><div class="csub" id="ch1s">Volume trend · All Cities</div><div class="legrow"><span class="leg"><span class="lsq" style="background:#6C5CE7"></span>Coupon</span><span class="leg"><span class="lsq" style="background:#ccc"></span>No Coupon</span></div><div style="position:relative;height:220px"><canvas id="c1"></canvas></div></div>
-    <div class="cc"><div class="ctit">Revenue vs Discount Burn</div><div class="csub">₹ values by month · selected filter</div><div class="legrow"><span class="leg"><span class="lsq" style="background:#F5C518"></span>Revenue</span><span class="leg"><span class="lsq" style="background:#DC3545"></span>Discount</span></div><div style="position:relative;height:220px"><canvas id="c2"></canvas></div></div>
+    <div class="cc">
+      <div class="ch"><div><div class="ctit">Orders — Coupon vs No Coupon</div><div class="csub" id="ch1s">No. of orders by month · All Cities</div></div><span class="cbadge" id="ct1">—</span></div>
+      <div class="legrow"><span class="leg"><span class="lsq" style="background:#6C5CE7"></span>With Coupon (orders)</span><span class="leg"><span class="lsq" style="background:#ccc"></span>No Coupon (orders)</span></div>
+      <div class="trend-row"><span id="ctrend1"></span></div>
+      <div style="position:relative;height:200px"><canvas id="c1"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ch"><div><div class="ctit">Revenue vs Discount Burn</div><div class="csub">₹ Revenue &amp; ₹ Discount by month · selected filter</div></div><span class="cbadge" id="ct2">—</span></div>
+      <div class="legrow"><span class="leg"><span class="lsq" style="background:#F5C518"></span>Revenue (₹)</span><span class="leg"><span class="lsq" style="background:#DC3545"></span>Discount Given (₹)</span></div>
+      <div class="trend-row"><span id="ctrend2"></span></div>
+      <div style="position:relative;height:200px"><canvas id="c2"></canvas></div>
+    </div>
   </div>
   <div class="cg2">
-    <div class="cc"><div class="ctit">Orders by Coupon Code</div><div class="csub">Ranked by volume · selected filter</div><div style="position:relative;height:280px"><canvas id="c3"></canvas></div></div>
-    <div class="cc"><div class="ctit">Discount Spend by Code</div><div class="csub">Which codes cost the most · selected filter</div><div style="position:relative;height:280px"><canvas id="c4"></canvas></div></div>
+    <div class="cc">
+      <div class="ch"><div><div class="ctit">Orders by Coupon Code</div><div class="csub">No. of orders — ranked by volume · selected filter</div></div><span class="cbadge" id="ct3">—</span></div>
+      <div style="position:relative;height:320px"><canvas id="c3"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ch"><div><div class="ctit">Discount Spend by Coupon Code</div><div class="csub">₹ total discount given per code · selected filter</div></div><span class="cbadge" id="ct4">—</span></div>
+      <div style="position:relative;height:320px"><canvas id="c4"></canvas></div>
+    </div>
   </div>
   <div class="cg3">
-    <div class="cc"><div class="ctit">Order Share by Discount Tier</div><div class="csub">% of total · selected filter</div><div style="position:relative;height:200px"><canvas id="c5"></canvas></div></div>
-    <div class="cc"><div class="ctit">Orders by City</div><div class="csub">Distribution across cities</div><div style="position:relative;height:200px"><canvas id="c6"></canvas></div></div>
-    <div class="cc"><div class="ctit">RENT25 vs RENT20 — Monthly Trend</div><div class="csub">Upfront vs Monthly primary codes compared</div><div style="position:relative;height:200px"><canvas id="c7"></canvas></div></div>
+    <div class="cc">
+      <div class="ch"><div><div class="ctit">Order Share by Tier</div><div class="csub">% of total orders by discount tier</div></div><span class="cbadge" id="ct5">—</span></div>
+      <div style="position:relative;height:210px"><canvas id="c5"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ch"><div><div class="ctit">Orders by City</div><div class="csub">No. of orders — city distribution</div></div><span class="cbadge" id="ct6">—</span></div>
+      <div style="position:relative;height:210px"><canvas id="c6"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ch"><div><div class="ctit">RENT25 vs RENT20 — Trend</div><div class="csub">No. of orders — Jan, Feb, Mar (all cities)</div></div><span class="cbadge" id="ct7">—</span></div>
+      <div class="trend-row"><span id="ctrend7r25"></span><span id="ctrend7r20"></span></div>
+      <div style="position:relative;height:180px"><canvas id="c7"></canvas></div>
+    </div>
   </div>
   <div class="cg2">
-    <div class="cc full"><div class="ctit">Monthly Order Mix — by Discount Tier</div><div class="csub">Tier composition trend — Jan, Feb, Mar</div><div class="legrow"><span class="leg"><span class="lsq" style="background:#6C5CE7"></span>25%</span><span class="leg"><span class="lsq" style="background:#FF6B00"></span>30%</span><span class="leg"><span class="lsq" style="background:#1B3C59"></span>&lt;20%</span><span class="leg"><span class="lsq" style="background:#ccc"></span>No Coupon</span></div><div style="position:relative;height:240px"><canvas id="c8"></canvas></div></div>
+    <div class="cc full">
+      <div class="ch"><div><div class="ctit">Order Mix by Discount Tier — Monthly</div><div class="csub">No. of orders stacked by tier · selected filter</div></div><span class="cbadge" id="ct8">—</span></div>
+      <div class="legrow"><span class="leg"><span class="lsq" style="background:#6C5CE7"></span>~25% Upfront (RENT25/RENT20)</span><span class="leg"><span class="lsq" style="background:#FF6B00"></span>~30% Upfront</span><span class="leg"><span class="lsq" style="background:#1B3C59"></span>&lt;20% Monthly</span><span class="leg"><span class="lsq" style="background:#ccc"></span>No Coupon</span></div>
+      <div class="trend-row"><span id="ctrend8"></span></div>
+      <div style="position:relative;height:210px"><canvas id="c8"></canvas></div>
+    </div>
+  </div>
+  <!-- NO COUPON SECTION -->
+  <div class="sh"><div class="stit">No-Coupon Orders — Monthly vs Upfront Breakdown</div><div class="spill" id="nc-lbl">All Cities · All Months</div></div>
+  <div class="nc-grid" id="nc-cards"></div>
+  <div class="cc full" style="margin-bottom:11px">
+    <div class="ch"><div><div class="ctit">No-Coupon Orders — Monthly vs Upfront by Month</div><div class="csub">No. of orders — plan type split across Jan, Feb, Mar</div></div><span class="cbadge" id="ct9">—</span></div>
+    <div class="legrow"><span class="leg"><span class="lsq" style="background:#6C5CE7"></span>Monthly Plan (orders)</span><span class="leg"><span class="lsq" style="background:#FF6B00"></span>Upfront Plan (orders)</span></div>
+    <div class="trend-row"><span id="ctrend9"></span></div>
+    <div style="position:relative;height:180px"><canvas id="c9"></canvas></div>
   </div>
 </div>
 
 <!-- TABLE TAB -->
 <div id="tab-table" class="tc">
   <div class="sh"><div class="stit">Full Data Table</div><div class="spill" id="table-lbl">All Cities · All Months</div></div>
-  <div class="twrap"><table><thead><tr><th>Code</th><th>Group</th><th class="r">Orders</th><th class="r">% Share</th><th class="r">Discount Given</th><th class="r">Disc/Order</th><th class="r">Revenue</th><th class="r">Rev/Order</th></tr></thead><tbody id="full-body"></tbody></table></div>
+  <div class="twrap"><table><thead><tr><th>Code</th><th>Plan Type</th><th class="r">Orders</th><th class="r">% Share</th><th class="r">Discount Given</th><th class="r">Disc/Order</th><th class="r">Revenue</th><th class="r">Rev/Order</th></tr></thead><tbody id="full-body"></tbody></table></div>
 </div>
 
-<!-- RECO TAB -->
+<!-- OBSERVATIONS TAB -->
 <div id="tab-reco" class="tc">
-  <div class="sh"><div class="stit">Strategic Recommendations</div><div class="spill">7 Observations · Acquisition Lens</div></div>
+  <div class="sh"><div class="stit">Observations & Watch Points</div><div class="spill">7 Notes · Acquisition Lens</div></div>
   <div class="rgrid">
-    <div class="rc"><div class="rnum">📌 Context</div><div class="rtit">Monthly Plan Floor Is ~20% Discount</div><div class="rbod">Replacing RENT20 with RENT10 caused a net loss of 72 monthly orders in March (1,059 → 987). 109 did convert at 10%, but not enough. Current floor for monthly plan appears to be ~20%.</div></div>
+    <div class="rc"><div class="rnum">📌 Context</div><div class="rtit">Monthly Plan Floor Is ~20% Discount</div><div class="rbod">Replacing RENT20 with RENT10 caused a net loss of 72 monthly orders in March (1,059 → 987). 109 orders did convert at 10%, but not enough to cover the drop. Current floor for monthly plan acquisition appears to be ~20%.</div></div>
     <div class="rc"><div class="rnum">📌 Context</div><div class="rtit">Upfront Plan Acquisition Is Stable</div><div class="rbod">Upfront orders 1,934 → 1,872 → 1,851 — slow, consistent decline, not code-driven. RENT25 holds its share. Monthly plan is where the live discount sensitivity question sits.</div></div>
-    <div class="rc opp"><div class="rnum">🟢 Signal</div><div class="rtit">No-Coupon Orders: Highest AoV, Zero Disc Cost</div><div class="rbod">2,035 orders at ₹4,812 avg — 60% above RENT20 (₹3,010). Zero discount spend. Identifying their acquisition source is the highest-margin lever available.</div></div>
-    <div class="rc"><div class="rnum">🔵 Observation</div><div class="rtit">RENT20 and RENT25 Are Separate Levers</div><div class="rbod">Monthly avg order ₹3,085, upfront ₹6,336. These codes address different purchase decisions. Experiment and measure per plan type — one doesn't substitute for the other.</div></div>
+    <div class="rc opp"><div class="rnum">🟢 Signal</div><div class="rtit">No-Coupon Orders Have the Highest AoV</div><div class="rbod">₹4,812 avg order value vs ₹3,010 for RENT20. 2,035 orders at zero discount cost. If these arrive from one channel (referral, organic), that channel is your highest-margin acquisition source.</div></div>
+    <div class="rc"><div class="rnum">🔵 Observation</div><div class="rtit">RENT20 and RENT25 Are Separate Levers</div><div class="rbod">Monthly avg order ₹3,085, upfront ₹6,336. Different purchase decisions. Experiment and measure per plan type — one doesn't substitute for the other.</div></div>
     <div class="rc"><div class="rnum">🔵 Observation</div><div class="rtit">JAIHIND & LUV30 — Tag as Campaign Codes</div><div class="rbod">JAIHIND: 56 Jan → 2 Feb → 0 Mar. LUV30: 0 Jan → 35 Feb → 0 Mar. Brief appearances spike trend data. Tag separately so they don't distort the RENT25/RENT20 baseline read.</div></div>
-    <div class="rc"><div class="rnum">🟡 Watch</div><div class="rtit">Monthly Order Volume — Key Metric for Q2</div><div class="rbod">Monthly orders: 1,109 → 1,059 → 987, trending down pre-experiment too. If the decline continues with RENT20 restored, the issue is demand or channel — not the coupon.</div></div>
-    <div class="rc opp"><div class="rnum">🟢 Signal</div><div class="rtit">~30% of Monthly Orders Convert Without a Code</div><div class="rbod">430–444 monthly orders/month use no coupon (~30–34% of monthly total). If RENT20 can be shown only to price-hesitant prospects, discount spend on this segment drops without losing orders.</div></div>
-  </div>
-</div>
-
-<!-- TABLE TAB -->
-<div id="tab-table" class="tc">
-  <div class="sh"><div class="stit">Full Data Table</div><div class="spill" id="table-lbl">All Cities · All Months</div></div>
-  <div class="twrap"><table><thead><tr><th>Code</th><th>Group</th><th class="r">Orders</th><th class="r">% Share</th><th class="r">Discount Given</th><th class="r">Disc/Order</th><th class="r">Revenue</th><th class="r">Rev/Order</th></tr></thead><tbody id="full-body"></tbody></table></div>
-</div>
-
-<!-- RECO TAB -->
-<div id="tab-reco" class="tc">
-  <div class="sh"><div class="stit">Strategic Recommendations</div><div class="spill">7 Observations · Acquisition Lens</div></div>
-  <div class="rgrid">
-    <div class="rc"><div class="rnum">📌 Context</div><div class="rtit">Monthly Plan Acquisition Is Price-Sensitive Below RENT20</div><div class="rbod">The RENT10 experiment established a clear data point: orders considering a monthly plan need at least a 20% discount to convert at current volumes. At 10%, 109 still converted — but the net loss was 72 orders in one month. This is useful to know. It means the monthly plan acquisition floor is currently around 20%, and any reduction below that will cost volume. How much volume loss is acceptable in exchange for lower discount cost is a business decision, not a data question.</div></div>
-    <div class="rc"><div class="rnum">📌 Context</div><div class="rtit">Upfront Plan Acquisition Is Stable — No Structural Shift</div><div class="rbod">Upfront plan orders: 1,934 → 1,872 → 1,851 — a gentle, consistent decline that's likely seasonal or market-level, not code-driven. RENT25 is maintaining its share within upfront. The 30% code volatility (RENT30 and PAYDAY trading volume) is campaign noise on top of a stable baseline. Upfront acquisition does not appear to be in distress — it's the monthly plan where the discount sensitivity question is more live.</div></div>
-    <div class="rc opp"><div class="rnum">🟢 Signal</div><div class="rtit">No-Coupon New Customers Have the Highest Order Value — Understand the Source</div><div class="rbod">No-coupon acquisitions average ₹4,812/order — 60% higher than RENT20 customers (₹3,010). These 2,035 orders arrived without needing a discount incentive at all. If a meaningful share of them come from a specific channel (referral, direct search, social), doubling down on that channel grows revenue with zero discount spend. This is the highest-margin acquisition lever available and it's currently not being measured separately.</div></div>
-    <div class="rc"><div class="rnum">🔵 Observation</div><div class="rtit">RENT20 and RENT25 Serve Different Customer Decisions Entirely</div><div class="rbod">Monthly plan customers (avg order ₹3,085) and upfront plan customers (avg order ₹6,336) are making fundamentally different purchase decisions. RENT20 reduces the barrier for customers who aren't ready to commit upfront. RENT25 makes a larger upfront payment feel worthwhile. These are separate acquisition levers — changes to one don't compensate for changes to the other. Any future coupon experiment should be designed and measured for one plan type at a time.</div></div>
-    <div class="rc"><div class="rnum">🔵 Observation</div><div class="rtit">JAIHIND & LUV30 — Campaign Codes That Skew Monthly Trends</div><div class="rbod">JAIHIND acquired 56 new upfront customers in January, 2 in February, zero in March. LUV30 acquired 35 in February, zero in other months. These are clearly campaign-specific or event-linked codes. Their short presence creates artificial spikes in monthly trend data — January looks stronger partly because of JAIHIND, February partly because of LUV30. When reading coupon trend data, these should be tagged separately from structural codes like RENT25 and RENT20 to avoid misreading baseline acquisition trends.</div></div>
-    <div class="rc"><div class="rnum">🟡 Track</div><div class="rtit">Watch Total Monthly Plan Acquisitions as the Key Health Metric</div><div class="rbod">Monthly plan new customer count (Jan 1,109 → Feb 1,059 → Mar 987) is trending down gently even after restoring RENT20. This may be seasonal, or it may be a genuine softening in monthly plan demand. Either way, it's the metric to watch closely in Q2. If monthly acquisitions continue declining with RENT20 fully restored, the issue isn't the coupon — it's demand or channel. If they recover, the March dip was purely the RENT10 experiment.</div></div>
-    <div class="rc opp"><div class="rnum">🟢 Signal</div><div class="rtit">~30% of Monthly Plan Customers Don't Need a Coupon to Convert</div><div class="rbod">430 → 411 → 444 new monthly plan customers converted without any coupon across Jan–Mar — consistently ~30–34% of all monthly plan orders. These high-intent customers arrived and converted at full price. This means any discount offered to the full monthly-plan prospect pool is being given to roughly a third of customers who would have converted anyway. If the RENT20 offer can be made more targeted — shown only to prospects who show price hesitation signals — the discount spend on this segment goes to zero without losing the customer.</div></div>
+    <div class="rc"><div class="rnum">🟡 Watch</div><div class="rtit">Monthly Order Volume — Key Metric for Q2</div><div class="rbod">Monthly orders: 1,109 → 1,059 → 987, trending down pre-experiment too. With RENT20 restored, if decline continues in Q2, the issue is demand or channel — not the coupon.</div></div>
+    <div class="rc opp"><div class="rnum">🟢 Signal</div><div class="rtit">~30% of Monthly Orders Need No Code</div><div class="rbod">430–444 monthly orders/month use no coupon (~30–34% of monthly total). If RENT20 can be targeted only to price-hesitant prospects, discount spend on this segment drops without losing orders.</div></div>
   </div>
 </div>
 
 </main>
-<footer>cityfurnish · <span>Coupon Analytics · Jan–Mar 2026</span> · Internal Use Only · Restricted</footer>
+<footer>cityfurnish · <span>Coupon Analytics · Jan–Mar 2026</span> · Internal Use Only</footer>
 </div>
 
 <script>
@@ -259,13 +331,13 @@ function unlock() {
   if (btoa(v) === CORRECT) {
     document.getElementById('lock').style.display = 'none';
     document.getElementById('dash').style.display = 'block';
-    sessionStorage.setItem('cf_a', '1');
+    sessionStorage.setItem('cf_a','1');
     if (typeof render === 'function') render();
   } else {
     var e = document.getElementById('lerr');
     e.textContent = 'Incorrect password. Try again.';
     document.getElementById('pwd').value = '';
-    setTimeout(function() { e.textContent = ''; }, 3000);
+    setTimeout(function(){ e.textContent=''; }, 3000);
   }
 }
 function logout() {
@@ -275,265 +347,305 @@ function logout() {
   document.getElementById('pwd').value = '';
 }
 </script>
-<script>
-const RAW = {"All":{"Jan":{"-":{"o":683,"d":0,"r":3098616},"DEAL30":{"o":2,"d":6000,"r":33068},"JAIHIND":{"o":56,"d":165412,"r":778227},"PAYDAY":{"o":66,"d":193421,"r":1012090},"RENT20":{"o":765,"d":218962,"r":2331737},"RENT25":{"o":1192,"d":1004264,"r":4030787},"RENT30":{"o":279,"d":824911,"r":4388847}},"Feb":{"-":{"o":640,"d":0,"r":3254097},"JAIHIND":{"o":2,"d":3396,"r":17206},"LUV30":{"o":35,"d":104508,"r":579166},"PAYDAY":{"o":214,"d":630890,"r":3304302},"RENT20":{"o":773,"d":227527,"r":2366042},"RENT25":{"o":1111,"d":955511,"r":3813168},"RENT30":{"o":156,"d":459138,"r":2532400}},"Mar":{"-":{"o":712,"d":565,"r":3440428},"PAYDAY":{"o":104,"d":299523,"r":1539478},"RENT10":{"o":133,"d":19104,"r":377723},"RENT15":{"o":1,"d":82,"r":1198},"RENT20":{"o":539,"d":149300,"r":1555007},"RENT25":{"o":1107,"d":921308,"r":3635858},"RENT30":{"o":216,"d":636587,"r":3136900},"SPLASH":{"o":26,"d":74746,"r":347607}},"All":{"-":{"o":2035,"d":565,"r":9793141},"DEAL30":{"o":2,"d":6000,"r":33068},"JAIHIND":{"o":58,"d":168809,"r":795433},"LUV30":{"o":35,"d":104508,"r":579166},"PAYDAY":{"o":384,"d":1123834,"r":5855870},"RENT10":{"o":133,"d":19104,"r":377723},"RENT15":{"o":1,"d":82,"r":1198},"RENT20":{"o":2077,"d":595789,"r":6252786},"RENT25":{"o":3410,"d":2881083,"r":11479814},"RENT30":{"o":651,"d":1920636,"r":10058148},"SPLASH":{"o":26,"d":74746,"r":347607}}},"BAN":{"Jan":{"-":{"o":217,"d":0,"r":828204},"JAIHIND":{"o":18,"d":53463,"r":253490},"PAYDAY":{"o":25,"d":73277,"r":435180},"RENT20":{"o":271,"d":78760,"r":835706},"RENT25":{"o":351,"d":296744,"r":1262266},"RENT30":{"o":85,"d":250206,"r":1252252}},"Feb":{"-":{"o":200,"d":0,"r":792742},"LUV30":{"o":10,"d":30000,"r":170369},"PAYDAY":{"o":76,"d":223855,"r":1105733},"RENT20":{"o":262,"d":71428,"r":699090},"RENT25":{"o":321,"d":280922,"r":1148656},"RENT30":{"o":58,"d":171409,"r":909164}},"Mar":{"-":{"o":260,"d":0,"r":974418},"PAYDAY":{"o":28,"d":81187,"r":428433},"RENT10":{"o":45,"d":5990,"r":120210},"RENT15":{"o":1,"d":82,"r":1198},"RENT20":{"o":169,"d":45659,"r":446324},"RENT25":{"o":335,"d":275023,"r":1095915},"RENT30":{"o":67,"d":198852,"r":916686},"SPLASH":{"o":12,"d":35460,"r":172482}},"All":{"-":{"o":677,"d":0,"r":2595364},"JAIHIND":{"o":18,"d":53463,"r":253490},"LUV30":{"o":10,"d":30000,"r":170369},"PAYDAY":{"o":129,"d":378319,"r":1969346},"RENT10":{"o":45,"d":5990,"r":120210},"RENT15":{"o":1,"d":82,"r":1198},"RENT20":{"o":702,"d":195847,"r":1981120},"RENT25":{"o":1007,"d":852688,"r":3506838},"RENT30":{"o":210,"d":620467,"r":3078102},"SPLASH":{"o":12,"d":35460,"r":172482}}},"MUM":{"Jan":{"-":{"o":155,"d":0,"r":786859},"JAIHIND":{"o":13,"d":39000,"r":191971},"PAYDAY":{"o":15,"d":42489,"r":240296},"RENT20":{"o":127,"d":35197,"r":351274},"RENT25":{"o":182,"d":154164,"r":606874},"RENT30":{"o":62,"d":185067,"r":961554}},"Feb":{"-":{"o":152,"d":0,"r":824385},"LUV30":{"o":9,"d":27000,"r":120343},"PAYDAY":{"o":34,"d":101339,"r":545246},"RENT20":{"o":141,"d":42394,"r":428537},"RENT25":{"o":151,"d":133748,"r":545938},"RENT30":{"o":38,"d":111468,"r":671323}},"Mar":{"-":{"o":135,"d":0,"r":608151},"PAYDAY":{"o":18,"d":51126,"r":236986},"RENT10":{"o":33,"d":3935,"r":83788},"RENT20":{"o":91,"d":22778,"r":249940},"RENT25":{"o":128,"d":109289,"r":438435},"RENT30":{"o":40,"d":118727,"r":653428},"SPLASH":{"o":2,"d":6000,"r":21529}},"All":{"-":{"o":442,"d":0,"r":2219395},"JAIHIND":{"o":13,"d":39000,"r":191971},"LUV30":{"o":9,"d":27000,"r":120343},"PAYDAY":{"o":67,"d":194954,"r":1022528},"RENT10":{"o":33,"d":3935,"r":83788},"RENT20":{"o":359,"d":100369,"r":1029751},"RENT25":{"o":461,"d":397201,"r":1591247},"RENT30":{"o":140,"d":415262,"r":2286306},"SPLASH":{"o":2,"d":6000,"r":21529}}},"GUR":{"Jan":{"-":{"o":60,"d":0,"r":383929},"JAIHIND":{"o":5,"d":13171,"r":72066},"PAYDAY":{"o":7,"d":21000,"r":92347},"RENT20":{"o":73,"d":27171,"r":312100},"RENT25":{"o":226,"d":188285,"r":743057},"RENT30":{"o":44,"d":130819,"r":779157}},"Feb":{"-":{"o":58,"d":0,"r":424094},"JAIHIND":{"o":1,"d":396,"r":5517},"LUV30":{"o":5,"d":14859,"r":93501},"PAYDAY":{"o":39,"d":115226,"r":559615},"RENT20":{"o":62,"d":25982,"r":319888},"RENT25":{"o":180,"d":149431,"r":591909},"RENT30":{"o":28,"d":82092,"r":431913}},"Mar":{"-":{"o":65,"d":0,"r":448898},"PAYDAY":{"o":18,"d":53768,"r":268395},"RENT10":{"o":10,"d":1814,"r":27978},"RENT20":{"o":55,"d":21162,"r":244294},"RENT25":{"o":219,"d":185735,"r":717663},"RENT30":{"o":48,"d":139446,"r":649331},"SPLASH":{"o":4,"d":11563,"r":48649}},"All":{"-":{"o":183,"d":0,"r":1256922},"JAIHIND":{"o":6,"d":13568,"r":77583},"LUV30":{"o":5,"d":14859,"r":93501},"PAYDAY":{"o":64,"d":189994,"r":920357},"RENT10":{"o":10,"d":1814,"r":27978},"RENT20":{"o":190,"d":74315,"r":876283},"RENT25":{"o":625,"d":523452,"r":2052628},"RENT30":{"o":120,"d":352358,"r":1860402},"SPLASH":{"o":4,"d":11563,"r":48649}}},"HYD":{"Jan":{"-":{"o":90,"d":0,"r":319897},"JAIHIND":{"o":7,"d":21000,"r":88800},"PAYDAY":{"o":10,"d":29655,"r":120656},"RENT20":{"o":97,"d":23391,"r":226211},"RENT25":{"o":134,"d":112544,"r":448207},"RENT30":{"o":30,"d":88213,"r":459906}},"Feb":{"-":{"o":81,"d":0,"r":328229},"JAIHIND":{"o":1,"d":3000,"r":11689},"LUV30":{"o":4,"d":12000,"r":110261},"PAYDAY":{"o":19,"d":56780,"r":351267},"RENT20":{"o":108,"d":30284,"r":284034},"RENT25":{"o":174,"d":142992,"r":539287},"RENT30":{"o":9,"d":26879,"r":136955}},"Mar":{"-":{"o":87,"d":0,"r":489297},"PAYDAY":{"o":14,"d":41106,"r":173433},"RENT10":{"o":17,"d":3170,"r":52288},"RENT20":{"o":93,"d":23927,"r":243663},"RENT25":{"o":165,"d":133620,"r":525750},"RENT30":{"o":16,"d":47632,"r":268517},"SPLASH":{"o":1,"d":3000,"r":8820}},"All":{"-":{"o":258,"d":0,"r":1137423},"JAIHIND":{"o":8,"d":24000,"r":100489},"LUV30":{"o":4,"d":12000,"r":110261},"PAYDAY":{"o":43,"d":127541,"r":645356},"RENT10":{"o":17,"d":3170,"r":52288},"RENT20":{"o":298,"d":77602,"r":753909},"RENT25":{"o":473,"d":389156,"r":1513244},"RENT30":{"o":55,"d":162725,"r":865378},"SPLASH":{"o":1,"d":3000,"r":8820}}},"PUN":{"Jan":{"-":{"o":79,"d":0,"r":345536},"DEAL30":{"o":2,"d":6000,"r":33068},"JAIHIND":{"o":7,"d":21000,"r":72135},"PAYDAY":{"o":3,"d":9000,"r":30602},"RENT20":{"o":123,"d":34132,"r":351840},"RENT25":{"o":147,"d":125386,"r":487895},"RENT30":{"o":26,"d":76614,"r":327722}},"Feb":{"-":{"o":81,"d":0,"r":386354},"LUV30":{"o":3,"d":8649,"r":34918},"PAYDAY":{"o":24,"d":71551,"r":447479},"RENT20":{"o":119,"d":34119,"r":337036},"RENT25":{"o":132,"d":119745,"r":490017},"RENT30":{"o":14,"d":41879,"r":216161}},"Mar":{"-":{"o":92,"d":565,"r":386548},"PAYDAY":{"o":17,"d":48192,"r":248998},"RENT10":{"o":16,"d":2496,"r":49570},"RENT20":{"o":84,"d":19047,"r":196145},"RENT25":{"o":114,"d":97900,"r":386718},"RENT30":{"o":22,"d":66000,"r":283390},"SPLASH":{"o":5,"d":13402,"r":75770}},"All":{"-":{"o":252,"d":565,"r":1118438},"DEAL30":{"o":2,"d":6000,"r":33068},"JAIHIND":{"o":7,"d":21000,"r":72135},"LUV30":{"o":3,"d":8649,"r":34918},"PAYDAY":{"o":44,"d":128743,"r":727078},"RENT10":{"o":16,"d":2496,"r":49570},"RENT20":{"o":326,"d":87298,"r":885020},"RENT25":{"o":393,"d":343030,"r":1364631},"RENT30":{"o":62,"d":184493,"r":827273},"SPLASH":{"o":5,"d":13402,"r":75770}}},"DEL":{"Jan":{"-":{"o":62,"d":0,"r":368081},"JAIHIND":{"o":2,"d":6000,"r":45659},"PAYDAY":{"o":4,"d":12000,"r":70300},"RENT20":{"o":52,"d":13815,"r":168851},"RENT25":{"o":138,"d":114243,"r":431625},"RENT30":{"o":22,"d":63992,"r":298291}},"Feb":{"-":{"o":44,"d":0,"r":410321},"LUV30":{"o":4,"d":12000,"r":49774},"PAYDAY":{"o":18,"d":50138,"r":234013},"RENT20":{"o":60,"d":17843,"r":251971},"RENT25":{"o":127,"d":104466,"r":397961},"RENT30":{"o":5,"d":13411,"r":96301}},"Mar":{"-":{"o":66,"d":0,"r":437390},"PAYDAY":{"o":8,"d":22818,"r":144340},"RENT10":{"o":10,"d":1418,"r":38987},"RENT20":{"o":38,"d":14785,"r":150339},"RENT25":{"o":136,"d":111584,"r":439323},"RENT30":{"o":19,"d":54016,"r":275894},"SPLASH":{"o":2,"d":5320,"r":20357}},"All":{"-":{"o":172,"d":0,"r":1215792},"JAIHIND":{"o":2,"d":6000,"r":45659},"LUV30":{"o":4,"d":12000,"r":49774},"PAYDAY":{"o":30,"d":84956,"r":448652},"RENT10":{"o":10,"d":1418,"r":38987},"RENT20":{"o":150,"d":46442,"r":571161},"RENT25":{"o":401,"d":330293,"r":1268910},"RENT30":{"o":46,"d":131419,"r":670486},"SPLASH":{"o":2,"d":5320,"r":20357}}},"CHN":{"Jan":{"-":{"o":19,"d":0,"r":64205},"JAIHIND":{"o":4,"d":11778,"r":54105},"PAYDAY":{"o":2,"d":6000,"r":22710},"RENT20":{"o":21,"d":6308,"r":82516},"RENT25":{"o":13,"d":11759,"r":46716},"RENT30":{"o":10,"d":30000,"r":309964}},"Feb":{"-":{"o":24,"d":0,"r":87972},"PAYDAY":{"o":4,"d":12000,"r":60949},"RENT20":{"o":21,"d":5476,"r":45486},"RENT25":{"o":26,"d":24207,"r":99400},"RENT30":{"o":4,"d":12000,"r":70584}},"Mar":{"-":{"o":7,"d":0,"r":95726},"PAYDAY":{"o":1,"d":1327,"r":38894},"RENT10":{"o":2,"d":281,"r":4902},"RENT20":{"o":9,"d":1943,"r":24302},"RENT25":{"o":10,"d":8158,"r":32054},"RENT30":{"o":4,"d":11913,"r":89653}},"All":{"-":{"o":50,"d":0,"r":247903},"JAIHIND":{"o":4,"d":11778,"r":54105},"PAYDAY":{"o":7,"d":19327,"r":122553},"RENT10":{"o":2,"d":281,"r":4902},"RENT20":{"o":51,"d":13726,"r":152304},"RENT25":{"o":49,"d":44124,"r":178170},"RENT30":{"o":18,"d":53913,"r":470201}}}};
 
+<script>
+const RAW = {"All": {"Jan": {"-": {"o": 683, "d": 0, "r": 3098616}, "DEAL30": {"o": 2, "d": 6000, "r": 33068}, "JAIHIND": {"o": 56, "d": 165412, "r": 778227}, "PAYDAY": {"o": 66, "d": 193421, "r": 1012090}, "RENT20": {"o": 765, "d": 218962, "r": 2331737}, "RENT25": {"o": 1192, "d": 1004264, "r": 4030787}, "RENT30": {"o": 279, "d": 824911, "r": 4388847}}, "Feb": {"-": {"o": 640, "d": 0, "r": 3254097}, "JAIHIND": {"o": 2, "d": 3396, "r": 17206}, "LUV30": {"o": 35, "d": 104508, "r": 579166}, "PAYDAY": {"o": 214, "d": 630890, "r": 3304302}, "RENT20": {"o": 773, "d": 227527, "r": 2366042}, "RENT25": {"o": 1111, "d": 955511, "r": 3813168}, "RENT30": {"o": 156, "d": 459138, "r": 2532400}}, "Mar": {"-": {"o": 712, "d": 565, "r": 3440428}, "PAYDAY": {"o": 104, "d": 299523, "r": 1539478}, "RENT10": {"o": 133, "d": 19104, "r": 377723}, "RENT15": {"o": 1, "d": 82, "r": 1198}, "RENT20": {"o": 539, "d": 149300, "r": 1555007}, "RENT25": {"o": 1107, "d": 921308, "r": 3635858}, "RENT30": {"o": 216, "d": 636587, "r": 3136900}, "SPLASH": {"o": 26, "d": 74746, "r": 347607}}, "All": {"-": {"o": 2035, "d": 565, "r": 9793141}, "DEAL30": {"o": 2, "d": 6000, "r": 33068}, "JAIHIND": {"o": 58, "d": 168809, "r": 795433}, "LUV30": {"o": 35, "d": 104508, "r": 579166}, "PAYDAY": {"o": 384, "d": 1123834, "r": 5855870}, "RENT10": {"o": 133, "d": 19104, "r": 377723}, "RENT15": {"o": 1, "d": 82, "r": 1198}, "RENT20": {"o": 2077, "d": 595789, "r": 6252786}, "RENT25": {"o": 3410, "d": 2881083, "r": 11479814}, "RENT30": {"o": 651, "d": 1920636, "r": 10058148}, "SPLASH": {"o": 26, "d": 74746, "r": 347607}}}, "BAN": {"Jan": {"-": {"o": 217, "d": 0, "r": 828204}, "JAIHIND": {"o": 18, "d": 53463, "r": 253490}, "PAYDAY": {"o": 25, "d": 73277, "r": 435180}, "RENT20": {"o": 271, "d": 78760, "r": 835706}, "RENT25": {"o": 351, "d": 296744, "r": 1262266}, "RENT30": {"o": 85, "d": 250206, "r": 1252252}}, "Feb": {"-": {"o": 200, "d": 0, "r": 792742}, "LUV30": {"o": 10, "d": 30000, "r": 170369}, "PAYDAY": {"o": 76, "d": 223855, "r": 1105733}, "RENT20": {"o": 262, "d": 71428, "r": 699090}, "RENT25": {"o": 321, "d": 280922, "r": 1148656}, "RENT30": {"o": 58, "d": 171409, "r": 909164}}, "Mar": {"-": {"o": 260, "d": 0, "r": 974418}, "PAYDAY": {"o": 28, "d": 81187, "r": 428433}, "RENT10": {"o": 45, "d": 5990, "r": 120210}, "RENT15": {"o": 1, "d": 82, "r": 1198}, "RENT20": {"o": 169, "d": 45659, "r": 446324}, "RENT25": {"o": 335, "d": 275023, "r": 1095915}, "RENT30": {"o": 67, "d": 198852, "r": 916686}, "SPLASH": {"o": 12, "d": 35460, "r": 172482}}, "All": {"-": {"o": 677, "d": 0, "r": 2595364}, "JAIHIND": {"o": 18, "d": 53463, "r": 253490}, "LUV30": {"o": 10, "d": 30000, "r": 170369}, "PAYDAY": {"o": 129, "d": 378319, "r": 1969346}, "RENT10": {"o": 45, "d": 5990, "r": 120210}, "RENT15": {"o": 1, "d": 82, "r": 1198}, "RENT20": {"o": 702, "d": 195847, "r": 1981120}, "RENT25": {"o": 1007, "d": 852688, "r": 3506838}, "RENT30": {"o": 210, "d": 620467, "r": 3078102}, "SPLASH": {"o": 12, "d": 35460, "r": 172482}}}, "MUM": {"Jan": {"-": {"o": 155, "d": 0, "r": 786859}, "JAIHIND": {"o": 13, "d": 39000, "r": 191971}, "PAYDAY": {"o": 15, "d": 42489, "r": 240296}, "RENT20": {"o": 127, "d": 35197, "r": 351274}, "RENT25": {"o": 182, "d": 154164, "r": 606874}, "RENT30": {"o": 62, "d": 185067, "r": 961554}}, "Feb": {"-": {"o": 152, "d": 0, "r": 824385}, "LUV30": {"o": 9, "d": 27000, "r": 120343}, "PAYDAY": {"o": 34, "d": 101339, "r": 545246}, "RENT20": {"o": 141, "d": 42394, "r": 428537}, "RENT25": {"o": 151, "d": 133748, "r": 545938}, "RENT30": {"o": 38, "d": 111468, "r": 671323}}, "Mar": {"-": {"o": 135, "d": 0, "r": 608151}, "PAYDAY": {"o": 18, "d": 51126, "r": 236986}, "RENT10": {"o": 33, "d": 3935, "r": 83788}, "RENT20": {"o": 91, "d": 22778, "r": 249940}, "RENT25": {"o": 128, "d": 109289, "r": 438435}, "RENT30": {"o": 40, "d": 118727, "r": 653428}, "SPLASH": {"o": 2, "d": 6000, "r": 21529}}, "All": {"-": {"o": 442, "d": 0, "r": 2219395}, "JAIHIND": {"o": 13, "d": 39000, "r": 191971}, "LUV30": {"o": 9, "d": 27000, "r": 120343}, "PAYDAY": {"o": 67, "d": 194954, "r": 1022528}, "RENT10": {"o": 33, "d": 3935, "r": 83788}, "RENT20": {"o": 359, "d": 100369, "r": 1029751}, "RENT25": {"o": 461, "d": 397201, "r": 1591247}, "RENT30": {"o": 140, "d": 415262, "r": 2286306}, "SPLASH": {"o": 2, "d": 6000, "r": 21529}}}, "GUR": {"Jan": {"-": {"o": 60, "d": 0, "r": 383929}, "JAIHIND": {"o": 5, "d": 13171, "r": 72066}, "PAYDAY": {"o": 7, "d": 21000, "r": 92347}, "RENT20": {"o": 73, "d": 27171, "r": 312100}, "RENT25": {"o": 226, "d": 188285, "r": 743057}, "RENT30": {"o": 44, "d": 130819, "r": 779157}}, "Feb": {"-": {"o": 58, "d": 0, "r": 424094}, "JAIHIND": {"o": 1, "d": 396, "r": 5517}, "LUV30": {"o": 5, "d": 14859, "r": 93501}, "PAYDAY": {"o": 39, "d": 115226, "r": 559615}, "RENT20": {"o": 62, "d": 25982, "r": 319888}, "RENT25": {"o": 180, "d": 149431, "r": 591909}, "RENT30": {"o": 28, "d": 82092, "r": 431913}}, "Mar": {"-": {"o": 65, "d": 0, "r": 448898}, "PAYDAY": {"o": 18, "d": 53768, "r": 268395}, "RENT10": {"o": 10, "d": 1814, "r": 27978}, "RENT20": {"o": 55, "d": 21162, "r": 244294}, "RENT25": {"o": 219, "d": 185735, "r": 717663}, "RENT30": {"o": 48, "d": 139446, "r": 649331}, "SPLASH": {"o": 4, "d": 11563, "r": 48649}}, "All": {"-": {"o": 183, "d": 0, "r": 1256922}, "JAIHIND": {"o": 6, "d": 13568, "r": 77583}, "LUV30": {"o": 5, "d": 14859, "r": 93501}, "PAYDAY": {"o": 64, "d": 189994, "r": 920357}, "RENT10": {"o": 10, "d": 1814, "r": 27978}, "RENT20": {"o": 190, "d": 74315, "r": 876283}, "RENT25": {"o": 625, "d": 523452, "r": 2052628}, "RENT30": {"o": 120, "d": 352358, "r": 1860402}, "SPLASH": {"o": 4, "d": 11563, "r": 48649}}}, "HYD": {"Jan": {"-": {"o": 90, "d": 0, "r": 319897}, "JAIHIND": {"o": 7, "d": 21000, "r": 88800}, "PAYDAY": {"o": 10, "d": 29655, "r": 120656}, "RENT20": {"o": 97, "d": 23391, "r": 226211}, "RENT25": {"o": 134, "d": 112544, "r": 448207}, "RENT30": {"o": 30, "d": 88213, "r": 459906}}, "Feb": {"-": {"o": 81, "d": 0, "r": 328229}, "JAIHIND": {"o": 1, "d": 3000, "r": 11689}, "LUV30": {"o": 4, "d": 12000, "r": 110261}, "PAYDAY": {"o": 19, "d": 56780, "r": 351267}, "RENT20": {"o": 108, "d": 30284, "r": 284034}, "RENT25": {"o": 174, "d": 142992, "r": 539287}, "RENT30": {"o": 9, "d": 26879, "r": 136955}}, "Mar": {"-": {"o": 87, "d": 0, "r": 489297}, "PAYDAY": {"o": 14, "d": 41106, "r": 173433}, "RENT10": {"o": 17, "d": 3170, "r": 52288}, "RENT20": {"o": 93, "d": 23927, "r": 243663}, "RENT25": {"o": 165, "d": 133620, "r": 525750}, "RENT30": {"o": 16, "d": 47632, "r": 268517}, "SPLASH": {"o": 1, "d": 3000, "r": 8820}}, "All": {"-": {"o": 258, "d": 0, "r": 1137423}, "JAIHIND": {"o": 8, "d": 24000, "r": 100489}, "LUV30": {"o": 4, "d": 12000, "r": 110261}, "PAYDAY": {"o": 43, "d": 127541, "r": 645356}, "RENT10": {"o": 17, "d": 3170, "r": 52288}, "RENT20": {"o": 298, "d": 77602, "r": 753909}, "RENT25": {"o": 473, "d": 389156, "r": 1513244}, "RENT30": {"o": 55, "d": 162725, "r": 865378}, "SPLASH": {"o": 1, "d": 3000, "r": 8820}}}, "PUN": {"Jan": {"-": {"o": 79, "d": 0, "r": 345536}, "DEAL30": {"o": 2, "d": 6000, "r": 33068}, "JAIHIND": {"o": 7, "d": 21000, "r": 72135}, "PAYDAY": {"o": 3, "d": 9000, "r": 30602}, "RENT20": {"o": 123, "d": 34132, "r": 351840}, "RENT25": {"o": 147, "d": 125386, "r": 487895}, "RENT30": {"o": 26, "d": 76614, "r": 327722}}, "Feb": {"-": {"o": 81, "d": 0, "r": 386354}, "LUV30": {"o": 3, "d": 8649, "r": 34918}, "PAYDAY": {"o": 24, "d": 71551, "r": 447479}, "RENT20": {"o": 119, "d": 34119, "r": 337036}, "RENT25": {"o": 132, "d": 119745, "r": 490017}, "RENT30": {"o": 14, "d": 41879, "r": 216161}}, "Mar": {"-": {"o": 92, "d": 565, "r": 386548}, "PAYDAY": {"o": 17, "d": 48192, "r": 248998}, "RENT10": {"o": 16, "d": 2496, "r": 49570}, "RENT20": {"o": 84, "d": 19047, "r": 196145}, "RENT25": {"o": 114, "d": 97900, "r": 386718}, "RENT30": {"o": 22, "d": 66000, "r": 283390}, "SPLASH": {"o": 5, "d": 13402, "r": 75770}}, "All": {"-": {"o": 252, "d": 565, "r": 1118438}, "DEAL30": {"o": 2, "d": 6000, "r": 33068}, "JAIHIND": {"o": 7, "d": 21000, "r": 72135}, "LUV30": {"o": 3, "d": 8649, "r": 34918}, "PAYDAY": {"o": 44, "d": 128743, "r": 727078}, "RENT10": {"o": 16, "d": 2496, "r": 49570}, "RENT20": {"o": 326, "d": 87298, "r": 885020}, "RENT25": {"o": 393, "d": 343030, "r": 1364631}, "RENT30": {"o": 62, "d": 184493, "r": 827273}, "SPLASH": {"o": 5, "d": 13402, "r": 75770}}}, "DEL": {"Jan": {"-": {"o": 62, "d": 0, "r": 368081}, "JAIHIND": {"o": 2, "d": 6000, "r": 45659}, "PAYDAY": {"o": 4, "d": 12000, "r": 70300}, "RENT20": {"o": 52, "d": 13815, "r": 168851}, "RENT25": {"o": 138, "d": 114243, "r": 431625}, "RENT30": {"o": 22, "d": 63992, "r": 298291}}, "Feb": {"-": {"o": 44, "d": 0, "r": 410321}, "LUV30": {"o": 4, "d": 12000, "r": 49774}, "PAYDAY": {"o": 18, "d": 50138, "r": 234013}, "RENT20": {"o": 60, "d": 17843, "r": 251971}, "RENT25": {"o": 127, "d": 104466, "r": 397961}, "RENT30": {"o": 5, "d": 13411, "r": 96301}}, "Mar": {"-": {"o": 66, "d": 0, "r": 437390}, "PAYDAY": {"o": 8, "d": 22818, "r": 144340}, "RENT10": {"o": 10, "d": 1418, "r": 38987}, "RENT20": {"o": 38, "d": 14785, "r": 150339}, "RENT25": {"o": 136, "d": 111584, "r": 439323}, "RENT30": {"o": 19, "d": 54016, "r": 275894}, "SPLASH": {"o": 2, "d": 5320, "r": 20357}}, "All": {"-": {"o": 172, "d": 0, "r": 1215792}, "JAIHIND": {"o": 2, "d": 6000, "r": 45659}, "LUV30": {"o": 4, "d": 12000, "r": 49774}, "PAYDAY": {"o": 30, "d": 84956, "r": 448652}, "RENT10": {"o": 10, "d": 1418, "r": 38987}, "RENT20": {"o": 150, "d": 46442, "r": 571161}, "RENT25": {"o": 401, "d": 330293, "r": 1268910}, "RENT30": {"o": 46, "d": 131419, "r": 670486}, "SPLASH": {"o": 2, "d": 5320, "r": 20357}}}, "CHN": {"Jan": {"-": {"o": 19, "d": 0, "r": 64205}, "JAIHIND": {"o": 4, "d": 11778, "r": 54105}, "PAYDAY": {"o": 2, "d": 6000, "r": 22710}, "RENT20": {"o": 21, "d": 6308, "r": 82516}, "RENT25": {"o": 13, "d": 11759, "r": 46716}, "RENT30": {"o": 10, "d": 30000, "r": 309964}}, "Feb": {"-": {"o": 24, "d": 0, "r": 87972}, "PAYDAY": {"o": 4, "d": 12000, "r": 60949}, "RENT20": {"o": 21, "d": 5476, "r": 45486}, "RENT25": {"o": 26, "d": 24207, "r": 99400}, "RENT30": {"o": 4, "d": 12000, "r": 70584}}, "Mar": {"-": {"o": 7, "d": 0, "r": 95726}, "PAYDAY": {"o": 1, "d": 1327, "r": 38894}, "RENT10": {"o": 2, "d": 281, "r": 4902}, "RENT20": {"o": 9, "d": 1943, "r": 24302}, "RENT25": {"o": 10, "d": 8158, "r": 32054}, "RENT30": {"o": 4, "d": 11913, "r": 89653}}, "All": {"-": {"o": 50, "d": 0, "r": 247903}, "JAIHIND": {"o": 4, "d": 11778, "r": 54105}, "PAYDAY": {"o": 7, "d": 19327, "r": 122553}, "RENT10": {"o": 2, "d": 281, "r": 4902}, "RENT20": {"o": 51, "d": 13726, "r": 152304}, "RENT25": {"o": 49, "d": 44124, "r": 178170}, "RENT30": {"o": 18, "d": 53913, "r": 470201}}}};
+
+const FMP_NC = {"All": {"Jan": {"mo": 430, "mr": 1433892, "uo": 253, "ur": 1664724}, "Feb": {"mo": 411, "mr": 1500899, "uo": 229, "ur": 1753198}, "Mar": {"mo": 444, "mr": 1241505, "uo": 268, "ur": 2198923}, "All": {"mo": 1285, "mr": 4176296, "uo": 750, "ur": 5616845}}, "BAN": {"Jan": {"mo": 145, "mr": 386703, "uo": 72, "ur": 441501}, "Feb": {"mo": 140, "mr": 443762, "uo": 60, "ur": 348980}, "Mar": {"mo": 183, "mr": 482147, "uo": 77, "ur": 492271}, "All": {"mo": 468, "mr": 1312612, "uo": 209, "ur": 1282752}}, "MUM": {"Jan": {"mo": 98, "mr": 312845, "uo": 57, "ur": 474014}, "Feb": {"mo": 98, "mr": 370676, "uo": 54, "ur": 453709}, "Mar": {"mo": 88, "mr": 250892, "uo": 47, "ur": 357259}, "All": {"mo": 284, "mr": 934413, "uo": 158, "ur": 1284982}}, "GUR": {"Jan": {"mo": 25, "mr": 125029, "uo": 35, "ur": 258900}, "Feb": {"mo": 18, "mr": 97746, "uo": 40, "ur": 326348}, "Mar": {"mo": 23, "mr": 78507, "uo": 42, "ur": 370391}, "All": {"mo": 66, "mr": 301282, "uo": 117, "ur": 955640}}, "HYD": {"Jan": {"mo": 61, "mr": 208305, "uo": 29, "ur": 111592}, "Feb": {"mo": 57, "mr": 177648, "uo": 24, "ur": 150581}, "Mar": {"mo": 52, "mr": 136934, "uo": 35, "ur": 352363}, "All": {"mo": 170, "mr": 522887, "uo": 88, "ur": 614536}}, "PUN": {"Jan": {"mo": 60, "mr": 171694, "uo": 19, "ur": 173842}, "Feb": {"mo": 58, "mr": 192589, "uo": 23, "ur": 193765}, "Mar": {"mo": 67, "mr": 188141, "uo": 25, "ur": 198407}, "All": {"mo": 185, "mr": 552424, "uo": 67, "ur": 566014}}, "DEL": {"Jan": {"mo": 26, "mr": 188518, "uo": 36, "ur": 179563}, "Feb": {"mo": 19, "mr": 142290, "uo": 25, "ur": 268031}, "Mar": {"mo": 27, "mr": 91616, "uo": 39, "ur": 345774}, "All": {"mo": 72, "mr": 422424, "uo": 100, "ur": 793368}}, "CHN": {"Jan": {"mo": 14, "mr": 38894, "uo": 5, "ur": 25311}, "Feb": {"mo": 21, "mr": 76188, "uo": 3, "ur": 11784}, "Mar": {"mo": 4, "mr": 13269, "uo": 3, "ur": 82457}, "All": {"mo": 39, "mr": 128351, "uo": 11, "ur": 119552}}};
+
+
+Chart.register(ChartDataLabels);
 const CITIES=['BAN','MUM','GUR','HYD','PUN','DEL','CHN'];
 const CITY_COLORS={BAN:'#6C5CE7',MUM:'#FF6B00',GUR:'#28A745',HYD:'#1B3C59',PUN:'#D4A80E',DEL:'#DC3545',CHN:'#0984E3'};
 const CODES=['RENT25','RENT20','-','RENT30','PAYDAY','RENT10','JAIHIND','LUV30','SPLASH','DEAL30','RENT15'];
 const MONTHS=['Jan','Feb','Mar'];
-let sM='All', sC='All', charts={};
+let sM='All', sC='All', sCP='All', charts={};
 
 function pick(btn){
-  const grp=btn.dataset.grp, val=btn.dataset.v;
-  document.querySelectorAll('.pill[data-grp="'+grp+'"]').forEach(b=>b.classList.remove('on'));
+  var grp=btn.dataset.grp, val=btn.dataset.v;
+  document.querySelectorAll('.pill[data-grp="'+grp+'"]').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
-  if(grp==='month') sM=val; else sC=val;
-  document.getElementById('sreset').style.display=(sM!=='All'||sC!=='All')?'block':'none';
+  if(grp==='month') sM=val;
+  else if(grp==='city') sC=val;
+  else if(grp==='coupon') sCP=val;
+  document.getElementById('sreset').style.display=(sM!=='All'||sC!=='All'||sCP!=='All')?'block':'none';
   render();
 }
 function resetF(){
-  sM='All'; sC='All';
-  document.querySelectorAll('.pill').forEach(b=>{b.classList.remove('on');if(b.dataset.v==='All')b.classList.add('on');});
+  sM='All'; sC='All'; sCP='All';
+  document.querySelectorAll('.pill').forEach(function(b){ b.classList.remove('on'); if(b.dataset.v==='All') b.classList.add('on'); });
   document.getElementById('sreset').style.display='none';
   render();
 }
 function stab(id,btn){
-  document.querySelectorAll('.tc').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tc').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
   document.getElementById('tab-'+id).classList.add('on');
   btn.classList.add('on');
 }
-
-function getD(){ return RAW[sC==='All'?'All':sC][sM==='All'?'All':sM]||{}; }
-function sumD(d){
-  let total=0, disc=0, rev=0, withCoupon=0;
-  Object.entries(d).forEach(([code,v])=>{ total+=v.o; disc+=v.d; rev+=v.r; if(code!=='-') withCoupon+=v.o; });
-  return {total, disc, rev, withCoupon};
+function getD(){
+  var base=RAW[sC==='All'?'All':sC][sM==='All'?'All':sM]||{};
+  if(sCP==='All') return base;
+  var f={}; if(base[sCP]) f[sCP]=base[sCP]; return f;
 }
+function sumD(d){ var t=0,dc=0,r=0,wc=0; Object.entries(d).forEach(function(e){ t+=e[1].o; dc+=e[1].d; r+=e[1].r; if(e[0]!=='-') wc+=e[1].o; }); return{total:t,disc:dc,rev:r,withCoupon:wc}; }
 function ri(n){ return Math.round(n).toLocaleString('en-IN'); }
 function fmtRs(n){ if(!n) return '₹0'; if(n>=10000000) return '₹'+(n/10000000).toFixed(2)+'Cr'; if(n>=100000) return '₹'+(n/100000).toFixed(2)+'L'; return '₹'+ri(n); }
-function fmtRsI(n){ return '₹'+ri(Math.round(n)); }
-
-function groupBadge(c){
-  if(c==='-') return '<span class="badge bno">No Code</span>';
-  if(['RENT25','RENT20'].includes(c)) return '<span class="badge b25">~20-25%</span>';
-  if(['RENT10','RENT15'].includes(c)) return '<span class="badge b20">&lt;20%</span>';
-  return '<span class="badge b30">~30%</span>';
-}
-function effGrade(dpo){
-  if(dpo===0) return '<span style="color:var(--ok);font-weight:700">✅ Free</span>';
-  if(dpo<300) return '<span style="color:var(--ok);font-weight:700">A — Efficient</span>';
-  if(dpo<1000) return '<span style="color:var(--gd);font-weight:700">B — Moderate</span>';
-  if(dpo<2000) return '<span style="color:var(--or);font-weight:700">C — Costly</span>';
-  return '<span style="color:var(--er);font-weight:700">D — High Burn</span>';
-}
+function fmtSh(n){ if(n>=10000000) return '₹'+(n/10000000).toFixed(1)+'Cr'; if(n>=100000) return '₹'+(n/100000).toFixed(1)+'L'; if(n>=1000) return '₹'+(n/1000).toFixed(0)+'K'; return '₹'+Math.round(n); }
+function fmtI(n){ return '₹'+ri(Math.round(n)); }
+function groupBadge(c){ if(c==='-') return '<span class="badge bno">No Code</span>'; if(['RENT25','RENT20'].includes(c)) return '<span class="badge b25">~25% Upfront</span>'; if(['RENT10','RENT15'].includes(c)) return '<span class="badge b20">&lt;20% Monthly</span>'; return '<span class="badge b30">~30% Upfront</span>'; }
+function planType(c){ if(c==='-') return 'Monthly + Upfront'; if(['RENT10','RENT15','RENT20'].includes(c)) return 'Monthly'; return 'Upfront'; }
+function effGrade(d){ if(d===0) return '<span style="color:var(--ok);font-weight:700">✅ Free</span>'; if(d<300) return '<span style="color:var(--ok);font-weight:700">A — Efficient</span>'; if(d<1000) return '<span style="color:var(--gd);font-weight:700">B — Moderate</span>'; if(d<2000) return '<span style="color:var(--or);font-weight:700">C — Costly</span>'; return '<span style="color:var(--er);font-weight:700">D — High Burn</span>'; }
+function setBadge(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
 
 function render(){
   var d=getD(), s=sumD(d);
-  var lbl=(sC==='All'?'All Cities':sC)+' · '+(sM==='All'?'All Months':sM+' 2026');
+  var cityLbl=sC==='All'?'All Cities':sC, monthLbl=sM==='All'?'All Months':sM+' 2026', couponLbl=sCP==='All'?'All Codes':(sCP==='-'?'No Coupon':sCP);
+  var lbl=cityLbl+' · '+monthLbl+(sCP!=='All'?' · '+couponLbl:'');
   document.getElementById('hbadge').textContent=lbl;
-  document.getElementById('analysis-lbl').textContent=lbl;
-  document.getElementById('table-lbl').textContent=lbl;
-  document.getElementById('snap-lbl').textContent=sM==='All'?'All Months':sM+' 2026';
+  ['analysis-lbl','table-lbl'].forEach(function(id){ setBadge(id, lbl); });
+  setBadge('snap-lbl', monthLbl);
   var pen=s.total?((s.withCoupon/s.total)*100).toFixed(1):0;
   var dp=s.rev?((s.disc/s.rev)*100).toFixed(1):0;
-  document.getElementById('k-ord').textContent=ri(s.total);
-  document.getElementById('k-ord-s').textContent=lbl;
-  document.getElementById('k-pen').textContent=pen+'%';
-  document.getElementById('k-pen-s').textContent=ri(s.withCoupon)+' of '+ri(s.total)+' used a coupon';
-  document.getElementById('k-rev').textContent=fmtRs(s.rev);
-  document.getElementById('k-disc').textContent=fmtRs(s.disc);
-  document.getElementById('k-disc-s').textContent=dp+'% of gross revenue';
+  setBadge('k-ord', ri(s.total)); setBadge('k-ord-s', lbl);
+  setBadge('k-pen', pen+'%'); setBadge('k-pen-s', ri(s.withCoupon)+' of '+ri(s.total)+' used a coupon');
+  setBadge('k-rev', fmtRs(s.rev)); setBadge('k-rev-s', 'Gross across selected period');
+  setBadge('k-disc', fmtRs(s.disc)); setBadge('k-disc-s', dp+'% of gross revenue');
   var r25=d['RENT25']||{o:0};
-  document.getElementById('ins-r25').textContent=ri(r25.o)+' orders · '+(s.total?((r25.o/s.total)*100).toFixed(1):0)+'%';
+  setBadge('ins-r25', ri(r25.o)+' orders · '+(s.total?((r25.o/s.total)*100).toFixed(1):0)+'%');
   renderSnap(); renderEff(d,s.total); renderFull(d,s.total); renderCharts(d,s);
 }
 
 function renderSnap(){
-  var snap=document.getElementById('city-snap');
-  var mo=sM==='All'?'All':sM;
-  snap.innerHTML='';
-  var grand=0;
+  var snap=document.getElementById('city-snap'), mo=sM==='All'?'All':sM;
+  snap.innerHTML=''; var grand=0;
   CITIES.forEach(function(c){ var md=RAW[c][mo]||{}; var o=0; Object.values(md).forEach(function(v){o+=v.o;}); grand+=o; });
   CITIES.forEach(function(c){
-    var md=RAW[c][mo]||{}; var o=0,r=0;
-    Object.values(md).forEach(function(v){o+=v.o;r+=v.r;});
-    var pct=grand?((o/grand)*100).toFixed(1):0;
-    var sel=sC===c?' sel':'';
+    var md=RAW[c][mo]||{}; var o=0,r=0; Object.values(md).forEach(function(v){o+=v.o;r+=v.r;});
+    var pct=grand?((o/grand)*100).toFixed(1):0, sel=sC===c?' sel':'';
     snap.innerHTML+='<div class="citycard'+sel+'" onclick="pickCity(\''+c+'\')"><div class="ccname" style="color:'+CITY_COLORS[c]+'">'+c+'</div><div class="ccord">'+ri(o)+' orders</div><div class="ccpct" style="color:'+CITY_COLORS[c]+'">'+pct+'%</div></div>';
   });
 }
 function pickCity(c){ pick(document.querySelector('.pill[data-grp="city"][data-v="'+c+'"]')); }
 
-function renderEff(d, tot){
-  var body=document.getElementById('eff-body');
-  body.innerHTML='';
-  var rows=[];
-  CODES.forEach(function(code){
-    if(d[code] && d[code].o>0){
-      var o=d[code].o, dc2=d[code].d, r=d[code].r;
-      rows.push({code:code, o:o, dc:dc2, r:r, dpo:Math.round(dc2/o), rpo:Math.round(r/o)});
-    }
-  });
+function renderEff(d,tot){
+  var body=document.getElementById('eff-body'); body.innerHTML=''; var rows=[];
+  CODES.forEach(function(code){ if(d[code]&&d[code].o>0){ var o=d[code].o,dc=d[code].d,r=d[code].r; rows.push({code:code,o:o,dc:dc,r:r,dpo:Math.round(dc/o),rpo:Math.round(r/o)}); } });
   rows.sort(function(a,b){return b.o-a.o;});
   var mx=rows.length?rows[0].o:1;
-  rows.forEach(function(row){
-    var bw=Math.round((row.o/mx)*100);
-    body.innerHTML+='<tr>'
-      +'<td><strong style="font-family:Poppins,sans-serif">'+row.code+'</strong></td>'
-      +'<td>'+groupBadge(row.code)+'</td>'
-      +'<td class="r">'+ri(row.o)+'<span class="bbar"><span class="bfill" style="width:'+bw+'%"></span></span></td>'
-      +'<td class="r">'+fmtRsI(row.dc)+'</td>'
-      +'<td class="r"><strong>'+fmtRsI(row.dpo)+'</strong></td>'
-      +'<td class="r">'+fmtRs(row.r)+'</td>'
-      +'<td class="r">'+fmtRsI(row.rpo)+'</td>'
-      +'<td class="r">'+effGrade(row.dpo)+'</td>'
-      +'</tr>';
-  });
-  var tO=rows.reduce(function(s,r){return s+r.o;},0);
-  var tD=rows.reduce(function(s,r){return s+r.dc;},0);
-  var tR=rows.reduce(function(s,r){return s+r.r;},0);
-  body.innerHTML+='<tr class="grand"><td colspan="2">Total</td>'
-    +'<td class="r">'+ri(tO)+'</td>'
-    +'<td class="r">'+fmtRsI(tD)+'</td>'
-    +'<td class="r">'+fmtRsI(tO?Math.round(tD/tO):0)+'</td>'
-    +'<td class="r">'+fmtRs(tR)+'</td>'
-    +'<td class="r">'+fmtRsI(tO?Math.round(tR/tO):0)+'</td>'
-    +'<td class="r">—</td></tr>';
+  rows.forEach(function(row){ var bw=Math.round((row.o/mx)*100); body.innerHTML+='<tr><td><strong style="font-family:Poppins,sans-serif">'+row.code+'</strong></td><td>'+planType(row.code)+'</td><td class="r">'+ri(row.o)+'<span class="bbar"><span class="bfill" style="width:'+bw+'%"></span></span></td><td class="r">'+fmtI(row.dc)+'</td><td class="r"><strong>'+fmtI(row.dpo)+'</strong></td><td class="r">'+fmtRs(row.r)+'</td><td class="r">'+fmtI(row.rpo)+'</td><td class="r">'+effGrade(row.dpo)+'</td></tr>'; });
+  var tO=rows.reduce(function(a,r){return a+r.o;},0), tD=rows.reduce(function(a,r){return a+r.dc;},0), tR=rows.reduce(function(a,r){return a+r.r;},0);
+  body.innerHTML+='<tr class="grand"><td colspan="2">Total</td><td class="r">'+ri(tO)+'</td><td class="r">'+fmtI(tD)+'</td><td class="r">'+fmtI(tO?Math.round(tD/tO):0)+'</td><td class="r">'+fmtRs(tR)+'</td><td class="r">'+fmtI(tO?Math.round(tR/tO):0)+'</td><td class="r">—</td></tr>';
 }
 
-function renderFull(d, tot){
-  var body=document.getElementById('full-body');
-  body.innerHTML='';
-  var rows=[];
-  CODES.forEach(function(code){
-    if(d[code] && d[code].o>0){
-      rows.push({code:code, o:d[code].o, dc:d[code].d, r:d[code].r});
-    }
-  });
+function renderFull(d,tot){
+  var body=document.getElementById('full-body'); body.innerHTML=''; var rows=[];
+  CODES.forEach(function(code){ if(d[code]&&d[code].o>0){ rows.push({code:code,o:d[code].o,dc:d[code].d,r:d[code].r}); } });
   rows.sort(function(a,b){return b.o-a.o;});
   var mx=rows.length?rows[0].o:1;
-  rows.forEach(function(row){
-    var pct=tot?((row.o/tot)*100).toFixed(1):0;
-    var bw=Math.round((row.o/mx)*100);
-    var dpo=Math.round(row.dc/row.o), rpo=Math.round(row.r/row.o);
-    body.innerHTML+='<tr>'
-      +'<td><strong style="font-family:Poppins,sans-serif">'+row.code+'</strong></td>'
-      +'<td>'+groupBadge(row.code)+'</td>'
-      +'<td class="r">'+ri(row.o)+'<span class="bbar"><span class="bfill" style="width:'+bw+'%"></span></span></td>'
-      +'<td class="r">'+pct+'%</td>'
-      +'<td class="r">'+fmtRsI(row.dc)+'</td>'
-      +'<td class="r">'+fmtRsI(dpo)+'</td>'
-      +'<td class="r">'+fmtRs(row.r)+'</td>'
-      +'<td class="r">'+fmtRsI(rpo)+'</td>'
-      +'</tr>';
-  });
-  var tO=rows.reduce(function(s,r){return s+r.o;},0);
-  var tD=rows.reduce(function(s,r){return s+r.dc;},0);
-  var tR=rows.reduce(function(s,r){return s+r.r;},0);
-  body.innerHTML+='<tr class="grand"><td colspan="2">Total</td>'
-    +'<td class="r">'+ri(tO)+'</td><td class="r">100%</td>'
-    +'<td class="r">'+fmtRsI(tD)+'</td>'
-    +'<td class="r">'+fmtRsI(tO?Math.round(tD/tO):0)+'</td>'
-    +'<td class="r">'+fmtRs(tR)+'</td>'
-    +'<td class="r">'+fmtRsI(tO?Math.round(tR/tO):0)+'</td></tr>';
+  rows.forEach(function(row){ var pct=tot?((row.o/tot)*100).toFixed(1):0, bw=Math.round((row.o/mx)*100), dpo=Math.round(row.dc/row.o), rpo=Math.round(row.r/row.o); body.innerHTML+='<tr><td><strong style="font-family:Poppins,sans-serif">'+row.code+'</strong></td><td>'+planType(row.code)+'</td><td class="r">'+ri(row.o)+'<span class="bbar"><span class="bfill" style="width:'+bw+'%"></span></span></td><td class="r">'+pct+'%</td><td class="r">'+fmtI(row.dc)+'</td><td class="r">'+fmtI(dpo)+'</td><td class="r">'+fmtRs(row.r)+'</td><td class="r">'+fmtI(rpo)+'</td></tr>'; });
+  var tO=rows.reduce(function(a,r){return a+r.o;},0), tD=rows.reduce(function(a,r){return a+r.dc;},0), tR=rows.reduce(function(a,r){return a+r.r;},0);
+  body.innerHTML+='<tr class="grand"><td colspan="2">Total</td><td class="r">'+ri(tO)+'</td><td class="r">100%</td><td class="r">'+fmtI(tD)+'</td><td class="r">'+fmtI(tO?Math.round(tD/tO):0)+'</td><td class="r">'+fmtRs(tR)+'</td><td class="r">'+fmtI(tO?Math.round(tR/tO):0)+'</td></tr>';
 }
 
 function killChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
 
-function baseOpts(extra){
-  var o={responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{grid:{display:false},ticks:{color:'#888',font:{family:'Montserrat',size:11}}},
-      y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#888',font:{family:'Montserrat',size:11}}}
-    }};
-  if(extra) Object.assign(o,extra);
-  return o;
+function fmtSh(n){ if(n>=10000000) return '₹'+(n/10000000).toFixed(1)+'Cr'; if(n>=100000) return '₹'+(n/100000).toFixed(1)+'L'; if(n>=1000) return '₹'+(n/1000).toFixed(0)+'K'; return '₹'+Math.round(n); }
+function fmtRs(n){ if(!n) return '₹0'; if(n>=10000000) return '₹'+(n/10000000).toFixed(2)+'Cr'; if(n>=100000) return '₹'+(n/100000).toFixed(2)+'L'; return '₹'+ri(n); }
+function fmtI(n){ return '₹'+ri(Math.round(n)); }
+function setBadge(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
+
+/* Render trend pill: values = array of numbers, trendId = element id */
+function renderTrend(trendId, values, unit) {
+  var el = document.getElementById(trendId);
+  if (!el) return;
+  if (!values || values.length < 2) { el.innerHTML = ''; return; }
+  var first = values[0], last = values[values.length-1];
+  if (!first) { el.innerHTML = ''; return; }
+  var pct = ((last - first) / first * 100).toFixed(1);
+  var up = last >= first;
+  var arrow = up ? '▲' : '▼';
+  var color = up ? '#28A745' : '#DC3545';
+  var bg = up ? '#f0fff4' : '#fff0f0';
+  el.innerHTML = '<span style="font-family:Poppins,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:'+bg+';color:'+color+';">'+arrow+' '+(up?'+':'')+pct+'% '+unit+'</span>';
 }
 
-function renderCharts(d, s){
-  var city=sC==='All'?'All':sC;
-  var months=sM==='All'?MONTHS:[sM];
+function renderNoCoupon(){
+  var city=sC==='All'?'All':sC, mo=sM==='All'?'All':sM;
+  var nc=FMP_NC[city][mo];
+  setBadge('nc-lbl',(sC==='All'?'All Cities':sC)+' · '+(sM==='All'?'All Months':sM+' 2026'));
+  var cards=document.getElementById('nc-cards');
+  cards.innerHTML='<div class="nc-card"><div class="nc-lbl">📅 Monthly Plan — No Coupon</div><div class="nc-val">'+ri(nc.mo)+' orders</div><div class="nc-sub">Revenue: '+fmtRs(nc.mr)+' &nbsp;·&nbsp; Avg: '+fmtI(nc.mo?Math.round(nc.mr/nc.mo):0)+'/order</div></div>'
+    +'<div class="nc-card up"><div class="nc-lbl">📦 Upfront Plan — No Coupon</div><div class="nc-val">'+ri(nc.uo)+' orders</div><div class="nc-sub">Revenue: '+fmtRs(nc.ur)+' &nbsp;·&nbsp; Avg: '+fmtI(nc.uo?Math.round(nc.ur/nc.uo):0)+'/order</div></div>';
 
+  killChart('c9');
+  var months=sM==='All'?MONTHS:[sM];
+  var moO=months.map(function(m){ return (FMP_NC[city][m]||{}).mo||0; });
+  var uoO=months.map(function(m){ return (FMP_NC[city][m]||{}).uo||0; });
+  var maxC9=Math.max.apply(null,moO.concat(uoO).filter(function(v){return v>0;}))||100;
+  var t9=moO.reduce(function(a,b){return a+b;},0)+uoO.reduce(function(a,b){return a+b;},0);
+  setBadge('ct9', ri(t9)+' orders');
+  renderTrend('ctrend9', moO.map(function(v,i){return v+uoO[i];}), 'Jan→Mar');
+  charts['c9']=new Chart(document.getElementById('c9'),{type:'bar',
+    data:{labels:months,datasets:[
+      {label:'Monthly Plan (orders)',data:moO,backgroundColor:'#6C5CE7',borderRadius:5},
+      {label:'Upfront Plan (orders)',data:uoO,backgroundColor:'#FF6B00',borderRadius:5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}},
+        datalabels:{display:true,anchor:'end',align:'top',color:'#444',font:{family:'Poppins',size:10,weight:'700'},
+          clamp:true,formatter:function(v){return v>0?ri(v):'';}}}
+      ,scales:{x:{grid:{display:false},ticks:{color:'#888',font:{family:'Montserrat',size:11}}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},max:Math.ceil(maxC9*1.35),ticks:{color:'#888',font:{family:'Montserrat',size:11}}}}}
+  });
+}
+
+function renderCharts(d,s){
+  var city=sC==='All'?'All':sC, months=sM==='All'?MONTHS:[sM];
+
+  /* ─── C1: Orders coupon vs no coupon ─── */
   killChart('c1');
-  var c1coupon=months.map(function(m){var md=RAW[city][m]||{};var t=0;Object.entries(md).forEach(function(e){if(e[0]!=='-')t+=e[1].o;});return t;});
-  var c1none=months.map(function(m){return (RAW[city][m]||{})['-']?RAW[city][m]['-'].o:0;});
-  document.getElementById('ch1s').textContent='Volume trend · '+(sC==='All'?'All Cities':sC);
+  var c1c=months.map(function(m){var md=RAW[city][m]||{};var t=0;Object.entries(md).forEach(function(e){if(e[0]!=='-')t+=e[1].o;});return t;});
+  var c1n=months.map(function(m){return (RAW[city][m]&&RAW[city][m]['-'])?RAW[city][m]['-'].o:0;});
+  var c1tot=c1c.map(function(v,i){return v+c1n[i];});
+  var c1max=Math.max.apply(null,c1tot)||100;
+  setBadge('ct1', ri(c1tot.reduce(function(a,b){return a+b;},0))+' orders');
+  setBadge('ch1s','No. of orders by month · '+(sC==='All'?'All Cities':sC));
+  renderTrend('ctrend1', c1tot, 'Jan→Mar');
   charts['c1']=new Chart(document.getElementById('c1'),{type:'bar',
     data:{labels:months,datasets:[
-      {label:'With Coupon',data:c1coupon,backgroundColor:'#6C5CE7',borderRadius:5},
-      {label:'No Coupon',data:c1none,backgroundColor:'#ccc',borderRadius:5}
+      {label:'With Coupon (orders)',data:c1c,backgroundColor:'#6C5CE7',borderRadius:5},
+      {label:'No Coupon (orders)',data:c1n,backgroundColor:'#ccc',borderRadius:5}
     ]},
-    options:Object.assign(baseOpts(),{plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}}}})
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}},
+        datalabels:{display:true,anchor:'end',align:'top',clamp:true,color:'#444',
+          font:{family:'Poppins',size:10,weight:'700'},formatter:function(v){return v>0?ri(v):'';}}}
+      ,scales:{x:{grid:{display:false},ticks:{color:'#888',font:{family:'Montserrat',size:11}}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},max:Math.ceil(c1max*1.35),
+          ticks:{color:'#888',font:{family:'Montserrat',size:11}}}}}
   });
 
+  /* ─── C2: Revenue vs Discount ─── */
   killChart('c2');
-  var c2rev=months.map(function(m){var md=RAW[city][m]||{};var t=0;Object.values(md).forEach(function(v){t+=v.r;});return t;});
-  var c2disc=months.map(function(m){var md=RAW[city][m]||{};var t=0;Object.values(md).forEach(function(v){t+=v.d;});return t;});
+  var c2r=months.map(function(m){var md=RAW[city][m]||{};var t=0;Object.values(md).forEach(function(v){t+=v.r;});return t;});
+  var c2d=months.map(function(m){var md=RAW[city][m]||{};var t=0;Object.values(md).forEach(function(v){t+=v.d;});return t;});
+  var c2max=Math.max.apply(null,c2r)||1;
+  setBadge('ct2', fmtSh(c2r.reduce(function(a,b){return a+b;},0))+' revenue');
+  renderTrend('ctrend2', c2r, 'revenue Jan→Mar');
   charts['c2']=new Chart(document.getElementById('c2'),{type:'bar',
     data:{labels:months,datasets:[
-      {label:'Revenue',data:c2rev,backgroundColor:'#F5C518',borderRadius:5},
-      {label:'Discount',data:c2disc,backgroundColor:'#DC3545',borderRadius:5}
+      {label:'Revenue (₹)',data:c2r,backgroundColor:'#F5C518',borderRadius:5},
+      {label:'Discount Given (₹)',data:c2d,backgroundColor:'#DC3545',borderRadius:5}
     ]},
-    options:Object.assign(baseOpts(),{
-      plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}}},
-      scales:{x:{grid:{display:false},ticks:{color:'#888'}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#888',callback:function(v){return '₹'+(v/100000).toFixed(0)+'L';}}}}
-    })
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}},
+        datalabels:{display:true,anchor:'end',align:'top',clamp:true,
+          color:'#333',font:{family:'Poppins',size:9,weight:'700'},
+          formatter:function(v){return v>0?fmtSh(v):'';}}}
+      ,scales:{x:{grid:{display:false},ticks:{color:'#888'}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},max:Math.ceil(c2max*1.35),
+          ticks:{color:'#888',callback:function(v){return fmtSh(v);}}}}}
   });
 
+  /* ─── C3: Orders by code (horizontal) ─── */
   killChart('c3');
-  var c3r=CODES.map(function(code){return {code:code,o:d[code]?d[code].o:0};}).filter(function(r){return r.o>0;}).sort(function(a,b){return b.o-a.o;});
+  var c3r=CODES.map(function(code){return{code:code,o:d[code]?d[code].o:0};}).filter(function(r){return r.o>0;}).sort(function(a,b){return b.o-a.o;});
+  setBadge('ct3', ri(c3r.reduce(function(a,r){return a+r.o;},0))+' orders');
+  var c3max=c3r.length?Math.ceil(c3r[0].o*1.45):100;
   charts['c3']=new Chart(document.getElementById('c3'),{type:'bar',
-    data:{labels:c3r.map(function(r){return r.code;}),datasets:[{data:c3r.map(function(r){return r.o;}),backgroundColor:'#6C5CE7',borderRadius:4}]},
-    options:Object.assign(baseOpts({indexAxis:'y'}),{scales:{x:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#888'}},y:{grid:{display:false},ticks:{color:'#555',font:{family:'Poppins',size:11,weight:'500'}}}}})
+    data:{labels:c3r.map(function(r){return r.code;}),
+      datasets:[{label:'Orders',data:c3r.map(function(r){return r.o;}),backgroundColor:'#6C5CE7',borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},
+        datalabels:{display:true,anchor:'end',align:'right',clamp:true,
+          color:'#333',font:{family:'Poppins',size:10,weight:'700'},
+          formatter:function(v){return ri(v);}}}
+      ,scales:{x:{max:c3max,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#888',font:{family:'Montserrat',size:10}}},
+        y:{grid:{display:false},ticks:{color:'#555',font:{family:'Poppins',size:11,weight:'500'}}}}}
   });
 
+  /* ─── C4: Discount by code (horizontal) ─── */
   killChart('c4');
-  var c4r=CODES.map(function(code){return {code:code,disc:d[code]?d[code].d:0};}).filter(function(r){return r.disc>0;}).sort(function(a,b){return b.disc-a.disc;});
+  var c4r=CODES.map(function(code){return{code:code,disc:d[code]?d[code].d:0};}).filter(function(r){return r.disc>0;}).sort(function(a,b){return b.disc-a.disc;});
+  setBadge('ct4', fmtSh(c4r.reduce(function(a,r){return a+r.disc;},0))+' discount');
+  var c4max=c4r.length?Math.ceil(c4r[0].disc*1.45):100;
   charts['c4']=new Chart(document.getElementById('c4'),{type:'bar',
-    data:{labels:c4r.map(function(r){return r.code;}),datasets:[{data:c4r.map(function(r){return r.disc;}),backgroundColor:'#DC3545',borderRadius:4}]},
-    options:Object.assign(baseOpts({indexAxis:'y'}),{scales:{x:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#888',callback:function(v){return '₹'+(v/100000).toFixed(1)+'L';}}},y:{grid:{display:false},ticks:{color:'#555',font:{family:'Poppins',size:11,weight:'500'}}}}})
+    data:{labels:c4r.map(function(r){return r.code;}),
+      datasets:[{label:'Discount (₹)',data:c4r.map(function(r){return r.disc;}),backgroundColor:'#DC3545',borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},
+        datalabels:{display:true,anchor:'end',align:'right',clamp:true,
+          color:'#333',font:{family:'Poppins',size:10,weight:'700'},
+          formatter:function(v){return fmtSh(v);}}}
+      ,scales:{x:{max:c4max,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#888',font:{family:'Montserrat',size:10},callback:function(v){return fmtSh(v);}}},
+        y:{grid:{display:false},ticks:{color:'#555',font:{family:'Poppins',size:11,weight:'500'}}}}}
   });
 
+  /* ─── C5: Donut — tier share ─── */
   killChart('c5');
-  var g25codes=['RENT25','RENT20'], g30codes=['RENT30','PAYDAY','JAIHIND','LUV30','SPLASH','DEAL30'], g10codes=['RENT10','RENT15'];
+  var g25c=['RENT25','RENT20'],g30c=['RENT30','PAYDAY','JAIHIND','LUV30','SPLASH','DEAL30'],g10c=['RENT10','RENT15'];
   var gv={g25:0,g30:0,g10:0,nc:0};
-  Object.entries(d).forEach(function(e){
-    var code=e[0],v=e[1];
-    if(g25codes.includes(code)) gv.g25+=v.o;
-    else if(g30codes.includes(code)) gv.g30+=v.o;
-    else if(g10codes.includes(code)) gv.g10+=v.o;
-    else gv.nc+=v.o;
-  });
+  Object.entries(d).forEach(function(e){ var c=e[0],v=e[1]; if(g25c.includes(c))gv.g25+=v.o; else if(g30c.includes(c))gv.g30+=v.o; else if(g10c.includes(c))gv.g10+=v.o; else gv.nc+=v.o; });
+  setBadge('ct5', ri(gv.g25+gv.g30+gv.g10+gv.nc)+' orders');
   charts['c5']=new Chart(document.getElementById('c5'),{type:'doughnut',
-    data:{labels:['~25% (Upfront)','~30% (Upfront)','<20% (Monthly)','No Coupon'],datasets:[{data:[gv.g25,gv.g30,gv.g10,gv.nc],backgroundColor:['#6C5CE7','#FF6B00','#1B3C59','#ccc'],borderWidth:2,borderColor:'#fff',hoverOffset:5}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Montserrat',size:10},padding:8,boxWidth:10,color:'#666'}}}}
+    data:{labels:['~25% Upfront\n('+ri(gv.g25)+')','~30% Upfront\n('+ri(gv.g30)+')','<20% Monthly\n('+ri(gv.g10)+')','No Coupon\n('+ri(gv.nc)+')'],
+      datasets:[{data:[gv.g25,gv.g30,gv.g10,gv.nc],backgroundColor:['#6C5CE7','#FF6B00','#1B3C59','#ccc'],borderWidth:2,borderColor:'#fff',hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:5},
+      plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Montserrat',size:9},padding:6,boxWidth:9,color:'#666'}},
+        datalabels:{display:function(ctx){var v=ctx.dataset.data[ctx.dataIndex],t=ctx.dataset.data.reduce(function(a,b){return a+b;},0);return v/t>0.05;},
+          color:'#fff',font:{family:'Poppins',size:10,weight:'700'},
+          formatter:function(v,ctx){var total=ctx.dataset.data.reduce(function(a,b){return a+b;},0);return ((v/total*100).toFixed(0)+'%');}}}}
   });
 
+  /* ─── C6: Donut — city ─── */
   killChart('c6');
   var mo2=sM==='All'?'All':sM;
-  var cityOrders=CITIES.map(function(c){var md=RAW[c][mo2]||{};var t=0;Object.values(md).forEach(function(v){t+=v.o;});return t;});
+  var cityO=CITIES.map(function(c){var md=RAW[c][mo2]||{};var t=0;Object.values(md).forEach(function(v){t+=v.o;});return t;});
+  setBadge('ct6', ri(cityO.reduce(function(a,b){return a+b;},0))+' orders');
   charts['c6']=new Chart(document.getElementById('c6'),{type:'doughnut',
-    data:{labels:CITIES,datasets:[{data:cityOrders,backgroundColor:CITIES.map(function(c){return CITY_COLORS[c];}),borderWidth:2,borderColor:'#fff',hoverOffset:5}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Montserrat',size:10},padding:8,boxWidth:10,color:'#666'}}}}
+    data:{labels:CITIES.map(function(c,i){return c+' ('+ri(cityO[i])+')';}),
+      datasets:[{data:cityO,backgroundColor:CITIES.map(function(c){return CITY_COLORS[c];}),borderWidth:2,borderColor:'#fff',hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:5},
+      plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Montserrat',size:9},padding:6,boxWidth:9,color:'#666'}},
+        datalabels:{display:function(ctx){var v=ctx.dataset.data[ctx.dataIndex],t=ctx.dataset.data.reduce(function(a,b){return a+b;},0);return v/t>0.04;},
+          color:'#fff',font:{family:'Poppins',size:10,weight:'700'},
+          formatter:function(v,ctx){var total=ctx.dataset.data.reduce(function(a,b){return a+b;},0);return ((v/total*100).toFixed(0)+'%');}}}}
   });
 
+  /* ─── C7: Line — RENT25 vs RENT20 with trend badges ─── */
   killChart('c7');
+  var r25d=MONTHS.map(function(m){return RAW[city][m]&&RAW[city][m]['RENT25']?RAW[city][m]['RENT25'].o:0;});
+  var r20d=MONTHS.map(function(m){return RAW[city][m]&&RAW[city][m]['RENT20']?RAW[city][m]['RENT20'].o:0;});
+  var c7max=Math.max.apply(null,r25d.concat(r20d))||100;
+  setBadge('ct7', ri(r25d.concat(r20d).reduce(function(a,b){return a+b;},0))+' orders');
+  renderTrend('ctrend7r25', r25d, 'RENT25 Jan→Mar');
+  renderTrend('ctrend7r20', r20d, 'RENT20 Jan→Mar');
   charts['c7']=new Chart(document.getElementById('c7'),{type:'line',
     data:{labels:MONTHS,datasets:[
-      {label:'RENT25',data:MONTHS.map(function(m){return RAW[city][m]&&RAW[city][m]['RENT25']?RAW[city][m]['RENT25'].o:0;}),borderColor:'#6C5CE7',backgroundColor:'rgba(108,92,231,.1)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#6C5CE7'},
-      {label:'RENT20',data:MONTHS.map(function(m){return RAW[city][m]&&RAW[city][m]['RENT20']?RAW[city][m]['RENT20'].o:0;}),borderColor:'#AFA9EC',backgroundColor:'rgba(175,169,236,.1)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#AFA9EC'}
+      {label:'RENT25 — Upfront (orders)',data:r25d,borderColor:'#6C5CE7',backgroundColor:'rgba(108,92,231,.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:'#6C5CE7',pointHoverRadius:7},
+      {label:'RENT20 — Monthly (orders)',data:r20d,borderColor:'#FF6B00',backgroundColor:'rgba(255,107,0,.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:'#FF6B00',pointHoverRadius:7}
     ]},
-    options:Object.assign(baseOpts(),{plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}}}})
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}},
+        datalabels:{display:true,anchor:'end',align:'top',clamp:true,
+          color:'#333',font:{family:'Poppins',size:10,weight:'700'},
+          formatter:function(v){return ri(v);}}}
+      ,scales:{x:{grid:{display:false},ticks:{color:'#888',font:{family:'Montserrat',size:11}}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},min:0,max:Math.ceil(c7max*1.35),
+          ticks:{color:'#888',font:{family:'Montserrat',size:11}}}}}
   });
 
+  /* ─── C8: Stacked bar — tier mix ─── */
   killChart('c8');
   var s25=months.map(function(m){var md=RAW[city][m]||{};return (md['RENT25']?md['RENT25'].o:0)+(md['RENT20']?md['RENT20'].o:0);});
   var s30=months.map(function(m){var md=RAW[city][m]||{};return ['RENT30','PAYDAY','JAIHIND','LUV30','SPLASH','DEAL30'].reduce(function(t,c){return t+(md[c]?md[c].o:0);},0);});
   var s10=months.map(function(m){var md=RAW[city][m]||{};return (md['RENT10']?md['RENT10'].o:0)+(md['RENT15']?md['RENT15'].o:0);});
   var snc=months.map(function(m){return (RAW[city][m]&&RAW[city][m]['-'])?RAW[city][m]['-'].o:0;});
+  var totals8=months.map(function(m,i){return s25[i]+s30[i]+s10[i]+snc[i];});
+  var c8max=Math.max.apply(null,totals8)||100;
+  setBadge('ct8', ri(totals8.reduce(function(a,b){return a+b;},0))+' orders');
+  renderTrend('ctrend8', totals8, 'total Jan→Mar');
   charts['c8']=new Chart(document.getElementById('c8'),{type:'bar',
     data:{labels:months,datasets:[
       {label:'~25% Upfront',data:s25,backgroundColor:'#6C5CE7',stack:'s',borderRadius:0},
@@ -541,11 +653,18 @@ function renderCharts(d, s){
       {label:'<20% Monthly',data:s10,backgroundColor:'#1B3C59',stack:'s',borderRadius:0},
       {label:'No Coupon',data:snc,backgroundColor:'#ccc',stack:'s',borderRadius:4}
     ]},
-    options:Object.assign(baseOpts(),{
-      plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}}},
-      scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#888'}},y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#888'}}}
-    })
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{family:'Montserrat',size:11},boxWidth:10,color:'#666'}},
+        datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>80;},
+          color:'#fff',font:{family:'Poppins',size:9,weight:'700'},
+          formatter:function(v){return ri(v);},
+          textShadowColor:'rgba(0,0,0,0.3)',textShadowBlur:3}}
+      ,scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#888',font:{family:'Montserrat',size:11}}},
+        y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},max:Math.ceil(c8max*1.2),
+          ticks:{color:'#888',font:{family:'Montserrat',size:11}}}}}
   });
+
+  renderNoCoupon();
 }
 
 (function(){
@@ -555,6 +674,6 @@ function renderCharts(d, s){
     setTimeout(function(){ render(); }, 100);
   }
 })();
-
 </script>
 </body>
+</html>
